@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.equationl.calculator_compose.dataModel.StandardKeyBoardBtn
@@ -29,7 +28,6 @@ fun StandardKeyBoard(viewModel: StandardViewModel) {
                         KeyBoardButton(
                             text = btn.text,
                             onClick = { viewModel.dispatch(StandardAction.ClickBtn(btn.clickInfo)) },
-                            btnSize = btn.size.size,
                             backGround = btn.background,
                             paddingValues = PaddingValues(0.5.dp)
                         )
@@ -45,7 +43,6 @@ fun StandardKeyBoard(viewModel: StandardViewModel) {
 fun KeyBoardButton(
     text: String,
     onClick: () -> Unit,
-    btnSize: DpSize = DpSize(40.dp, 25.dp),
     backGround: Color = Color.White,
     paddingValues: PaddingValues = PaddingValues(0.dp)
 ) {

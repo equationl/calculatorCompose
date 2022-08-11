@@ -9,7 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.equationl.calculator_compose.ui.theme.CalculatorComposeTheme
-import com.equationl.calculator_compose.view.StandardScreen
+import com.equationl.calculator_compose.view.HomeScreen
 import com.equationl.calculator_compose.viewModel.StandardViewModel
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val viewModel: StandardViewModel = viewModel()
-                    StandardScreen(viewModel)
+                    HomeScreen(viewModel)
                 }
             }
         }

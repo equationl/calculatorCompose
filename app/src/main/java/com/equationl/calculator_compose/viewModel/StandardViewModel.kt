@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.equationl.calculator_compose.dataModel.Operator
+import com.equationl.calculator_compose.dataModel.*
 import com.equationl.calculator_compose.utils.calculate
 import com.equationl.calculator_compose.utils.formatNumber
 
@@ -36,7 +36,7 @@ class StandardViewModel: ViewModel() {
             isInputSecondValue = false
         }
 
-        if (no in 0..9) {
+        if (no in KeyIndex_0..KeyIndex_9) {
             val newValue =
                 if (viewStates.inputValue == "0") no.toString()
                 else if (viewStates.inputOperator != Operator.NUll && !isInputSecondValue) {
@@ -55,19 +55,19 @@ class StandardViewModel: ViewModel() {
         }
 
         when (no) {
-            10 -> { // "+"
+            KeyIndex_Add -> { // "+"
                 clickArithmetic(Operator.ADD)
             }
-            11 -> { // "-"
+            KeyIndex_Minus -> { // "-"
                 clickArithmetic(Operator.MINUS)
             }
-            12 -> { // "×"
+            KeyIndex_Multiply -> { // "×"
                 clickArithmetic(Operator.MULTIPLY)
             }
-            13 -> { // "÷"
+            KeyIndex_Divide -> { // "÷"
                 clickArithmetic(Operator.Divide)
             }
-            14 -> { // "+/-"
+            KeyIndex_NegativeNumber -> { // "+/-"
                 if (viewStates.inputValue != "0") {
                     val newValue: String =
                         if (viewStates.inputValue.substring(0, 1) == "-") viewStates.inputValue.substring(1, viewStates.inputValue.length)
@@ -75,21 +75,21 @@ class StandardViewModel: ViewModel() {
                     viewStates = viewStates.copy(inputValue = newValue, isFinalResult = false)
                 }
             }
-            15 -> { // "."
+            KeyIndex_Point -> { // "."
                 if (viewStates.inputValue.indexOf('.') == -1) {
                     viewStates = viewStates.copy(inputValue = viewStates.inputValue + ".")
                 }
             }
-            16 -> { // "1/x"
+            KeyIndex_Reciprocal -> { // "1/x"
                 clickReciprocal()
             }
-            17 -> { // "x²"
+            KeyIndex_Pow2 -> { // "x²"
                 clickPow2()
             }
-            18 -> { // "√x"
+            KeyIndex_Sqrt -> { // "√x"
                 clickSqrt()
             }
-            19 -> { // "%"
+            KeyIndex_Percentage -> { // "%"
                 if (isInputSecondValue && viewStates.lastInputValue != "" && viewStates.inputOperator != Operator.NUll) {
                     var result: String = calculate(viewStates.inputValue, "100", Operator.Divide).getOrNull().toString()
                     result = calculate(viewStates.lastInputValue, result, Operator.MULTIPLY).getOrNull().toString()
@@ -110,17 +110,17 @@ class StandardViewModel: ViewModel() {
                     )
                 }
             }
-            200 -> { // "="
+            KeyIndex_Equal -> { // "="
                 clickEqual()
             }
-            1001 -> { // "CE"
+            KeyIndex_CE -> { // "CE"
                 viewStates = viewStates.copy(inputValue = "0")
             }
-            1002 -> {  // "C"
+            KeyIndex_C -> {  // "C"
                 isInputSecondValue = false
                 viewStates = StandardState()
             }
-            1003 -> { // "←"
+            KeyIndex_Back -> { // "←"
                 if (viewStates.inputValue != "0") {
                     var newValue = viewStates.inputValue.substring(0, viewStates.inputValue.length - 1)
                     if (newValue.isEmpty()) newValue = "0"
