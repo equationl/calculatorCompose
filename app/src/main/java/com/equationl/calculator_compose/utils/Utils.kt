@@ -3,6 +3,7 @@ package com.equationl.calculator_compose.utils
 import androidx.core.text.isDigitsOnly
 import com.equationl.calculator_compose.dataModel.Operator
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 /**
  * BigDecimal 的开平方
@@ -25,9 +26,9 @@ fun BigDecimal.sqrt(scale: Int): BigDecimal {
 /**
  * 格式化数字（添加逗号分隔符）
  * */
-fun String.formatNumber(): String {
+fun String.formatNumber(formatDecimal: Boolean = false, formatInteger: Boolean = true): String {
     // 如果不是合法数字则不做处理
-    if (this.substring(0, 1) != "-" && !this.isDigitsOnly()) return this
+    if (this.substring(0, 1) != "-" && !this.replace(".", "").isDigitsOnly()) return this
 
     val stringBuilder = StringBuilder(this)
 
@@ -48,11 +49,25 @@ fun String.formatNumber(): String {
         decimal.insert(0, '.')
     }
 
-    // 添加逗号分隔符
-    if (integer.length > 3) {
-        val end = if (integer[0] == '-') 2 else 1 // 判断是否有前导符号
-        for (i in integer.length-3 downTo end step 3) {
-            integer.insert(i, ",")
+    if (formatInteger) {
+        // 给整数部分添加逗号分隔符
+        if (integer.length > 3) {
+            val end = if (integer[0] == '-') 2 else 1 // 判断是否有前导符号
+            for (i in integer.length-3 downTo end step 3) {
+                integer.insert(i, ",")
+            }
+        }
+    }
+
+    if (formatDecimal) {
+        // 移除小数部分末尾占位的 0
+        if (decimal.isNotEmpty()) {
+            while (decimal.last() == '0') {
+                decimal.deleteAt(decimal.lastIndex)
+            }
+            if (decimal.length == 1) { // 上面我们给小数部分首位添加了点号 ”.“ ，所以如果长度为 1 则表示不存在有效小数，则将点号也删除掉
+                decimal.deleteAt(0)
+            }
         }
     }
 
@@ -78,8 +93,16 @@ fun calculate(leftValue: String, rightValue: String, operator: Operator): Result
             if (right.signum() == 0) {
                 return Result.failure(ArithmeticException("除数不能为零"))
             }
-            left.setScale(16)
-            return  Result.success(left.divide(right))
+            return  Result.success(left.divide(right, 16, RoundingMode.HALF_UP))
+        }
+        Operator.SQRT -> {
+            if (left.signum() == -1) {
+                return Result.failure(ArithmeticException("无效输入"))
+            }
+            return Result.success(left.sqrt(16))
+        }
+        Operator.POW2 -> {
+            return Result.success(left.pow(2))
         }
         Operator.NUll -> {
             return  Result.success(left)

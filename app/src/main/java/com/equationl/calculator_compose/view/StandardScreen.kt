@@ -38,8 +38,8 @@ fun StandardScreen(viewModel: StandardViewModel) {
             Modifier
                 .fillMaxWidth()
                 .height(150.dp), horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center) {
-            Text(text = "${viewState.showValueLeft}${viewState.inputOperator.showText}${viewState.showValueRight}", modifier = Modifier.padding(8.dp), fontSize = 24.sp)
-            Text(text = viewState.inputValue.formatNumber(), modifier = Modifier.padding(8.dp), fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            Text(text = viewState.showText, modifier = Modifier.padding(8.dp), fontSize = 24.sp)
+            Text(text = viewState.inputValue.formatNumber(viewState.isFinalResult), modifier = Modifier.padding(8.dp), fontSize = 32.sp, fontWeight = FontWeight.Bold)
         }
 
         StandardKeyBoard(viewModel)

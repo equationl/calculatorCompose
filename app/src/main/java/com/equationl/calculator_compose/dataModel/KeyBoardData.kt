@@ -10,15 +10,15 @@ val EqualColor = Color.Cyan
 
 val StandardKeyBoardBtn = listOf(
     listOf(
-        KeyBoardData("%", FunctionColor, KeyBoardBtnSize.Standard, 0),
+        KeyBoardData("%", FunctionColor, KeyBoardBtnSize.Standard, 19),
         KeyBoardData("CE", FunctionColor, KeyBoardBtnSize.Standard, 1001),
         KeyBoardData("C", FunctionColor, KeyBoardBtnSize.Standard, 1002),
         KeyBoardData("←", FunctionColor, KeyBoardBtnSize.Standard, 1003),
     ),
     listOf(
-        KeyBoardData("1/x", FunctionColor, KeyBoardBtnSize.Standard, 4),
-        KeyBoardData("x²", FunctionColor, KeyBoardBtnSize.Standard, 5),
-        KeyBoardData("√x", FunctionColor, KeyBoardBtnSize.Standard, 6),
+        KeyBoardData("1/x", FunctionColor, KeyBoardBtnSize.Standard, 16),
+        KeyBoardData("x²", FunctionColor, KeyBoardBtnSize.Standard, 17),
+        KeyBoardData("√x", FunctionColor, KeyBoardBtnSize.Standard, 18),
         KeyBoardData(Operator.Divide.showText, FunctionColor, KeyBoardBtnSize.Standard, 13),
     ),
     listOf(
@@ -64,5 +64,7 @@ enum class Operator(val showText: String) {
     MINUS("-"),
     MULTIPLY("×"),
     Divide("÷"),
+    SQRT("√"),
+    POW2("²"),
     NUll("")
 }
