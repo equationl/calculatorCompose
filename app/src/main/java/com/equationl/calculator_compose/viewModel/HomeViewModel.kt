@@ -1,5 +1,8 @@
 package com.equationl.calculator_compose.viewModel
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,9 +20,20 @@ class HomeViewModel @Inject constructor(
     fun dispatch(action: HomeAction) {
         when (action) {
             is HomeAction.ClickMenu -> {
-                // TODO
+                changeScreenOrientation(action.orientation, action.context)
             }
         }
+    }
+
+    private fun changeScreenOrientation(orientation: Int, context: Context) {
+        val activity = context.findActivity() ?: return
+        activity.requestedOrientation = orientation
+    }
+
+    private fun Context.findActivity(): Activity? = when (this) {
+        is Activity -> this
+        is ContextWrapper -> baseContext.findActivity()
+        else -> null
     }
 }
 
@@ -28,5 +42,5 @@ data class HomeState(
 )
 
 sealed class HomeAction {
-    object ClickMenu: HomeAction()
+    data class ClickMenu(val orientation: Int, val context: Context): HomeAction()
 }
