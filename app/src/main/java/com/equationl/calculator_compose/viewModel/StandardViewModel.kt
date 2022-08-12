@@ -4,17 +4,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.equationl.calculator_compose.dataModel.*
+import com.equationl.calculator_compose.database.HistoryDb
 import com.equationl.calculator_compose.utils.calculate
 import com.equationl.calculator_compose.utils.formatNumber
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class StandardViewModel: ViewModel() {
+@HiltViewModel
+class StandardViewModel @Inject constructor(
+    private val dataBase: HistoryDb
+): ViewModel() {
+
     var viewStates by mutableStateOf(StandardState())
         private set
 
     fun dispatch(action: StandardAction) {
         when (action) {
             is StandardAction.ClickBtn -> clickBtn(action.no)
+            is StandardAction.ToggleHistory -> toggleHistory(action.forceClose)
+            is StandardAction.ReadFromHistory -> readFromHistory(action.item)
+            is StandardAction.DeleteHistory -> deleteHistory(action.item)
         }
     }
 
@@ -26,6 +40,60 @@ class StandardViewModel: ViewModel() {
     private var isAdvancedCalculated: Boolean = false
     /**标记是否处于错误状态*/
     private var isErr: Boolean = false
+
+    private fun toggleHistory(forceClose: Boolean) {
+        if (viewStates.historyList.isNotEmpty() || forceClose) {
+            viewStates = viewStates.copy(historyList = listOf())
+        }
+        else {
+            viewStates = viewStates.copy(historyList = listOf(
+                HistoryData(-1, showText = "加载中……", "null", "null", Operator.NUll, "请稍候")
+            ))
+
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    var list = dataBase.history().getAll()
+                    if (list.isEmpty()) {
+                        list = listOf(
+                            HistoryData(-1, showText = "", "null", "null", Operator.NUll, "没有历史记录")
+                        )
+                    }
+                    viewStates = viewStates.copy(historyList = list)
+                }
+            }
+        }
+    }
+
+    private fun readFromHistory(item: HistoryData) {
+        if (item.id != -1) {
+            viewStates = StandardState(
+                inputValue = item.result,
+                lastInputValue = item.lastInputText,
+                inputOperator = item.operator,
+                showText = item.showText,
+                isFinalResult = true
+            )
+        }
+    }
+
+    private fun deleteHistory(item: HistoryData?) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                viewStates = if (item == null) {
+                    dataBase.history().deleteAll()
+                    viewStates.copy(historyList = listOf())
+                } else {
+                    dataBase.history().delete(item)
+                    val newList = mutableListOf<HistoryData>()
+                    newList.addAll(viewStates.historyList)
+                    newList.remove(item)
+
+                    viewStates.copy(historyList = newList)
+                }
+
+            }
+        }
+    }
 
     private fun clickBtn(no: Int) {
         if (isErr) {
@@ -222,6 +290,8 @@ class StandardViewModel: ViewModel() {
     }
 
     private fun clickEqual() {
+        val inputValueCache = viewStates.inputValue
+
         if (viewStates.inputOperator == Operator.NUll) {
             viewStates = if (isAdvancedCalculated) {
                 viewStates.copy(
@@ -280,6 +350,23 @@ class StandardViewModel: ViewModel() {
         }
 
         isAdvancedCalculated = false
+
+        // 将计算内容保存到数据库
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                if (!isErr) {  // 不保存错误结果
+                    dataBase.history().insert(
+                        HistoryData(
+                            showText = viewStates.showText,
+                            lastInputText = viewStates.lastInputValue,
+                            operator = viewStates.inputOperator,
+                            result = viewStates.inputValue,
+                            inputText = inputValueCache
+                        )
+                    )
+                }
+            }
+        }
     }
 
     private fun clickArithmetic(operator: Operator) {
@@ -314,9 +401,13 @@ data class StandardState(
     val inputOperator: Operator = Operator.NUll,
     val lastInputValue: String = "",
     val showText: String = "",
-    val isFinalResult: Boolean = false
+    val isFinalResult: Boolean = false,
+    val historyList: List<HistoryData> = listOf()
 )
 
 sealed class StandardAction {
+    data class ToggleHistory(val forceClose: Boolean = false): StandardAction()
     data class ClickBtn(val no: Int): StandardAction()
+    data class ReadFromHistory(val item: HistoryData): StandardAction()
+    data class DeleteHistory(val item: HistoryData?): StandardAction()
 }

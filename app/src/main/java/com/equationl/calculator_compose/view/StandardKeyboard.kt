@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.equationl.calculator_compose.dataModel.StandardKeyBoardBtn
+import com.equationl.calculator_compose.database.HistoryDb
 import com.equationl.calculator_compose.viewModel.StandardAction
 import com.equationl.calculator_compose.viewModel.StandardViewModel
 
@@ -64,6 +66,6 @@ fun KeyBoardButton(
 @Composable
 fun PreviewKeyBoard() {
     Column(modifier = Modifier.padding(16.dp)) {
-        StandardKeyBoard(StandardViewModel())
+        StandardKeyBoard(StandardViewModel(HistoryDb.create(LocalContext.current, false)))
     }
 }
