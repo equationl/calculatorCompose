@@ -184,7 +184,7 @@ class StandardViewModel @Inject constructor(
             KeyIndex_CE -> { // "CE"
                 viewStates = viewStates.copy(inputValue = "0")
             }
-            KeyIndex_C -> {  // "C"
+            KeyIndex_Clear -> {  // "C"
                 isInputSecondValue = false
                 viewStates = StandardState()
             }

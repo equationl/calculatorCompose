@@ -31,7 +31,13 @@ fun BigDecimal.sqrt(scale: Int): BigDecimal {
 /**
  * 格式化数字（添加逗号分隔符）
  * */
-fun String.formatNumber(formatDecimal: Boolean = false, formatInteger: Boolean = true): String {
+fun String.formatNumber(
+    addSplitChar: String = ",",
+    splitLength: Int = 3,
+    isAddLeadingZero: Boolean = false,
+    formatDecimal: Boolean = false,
+    formatInteger: Boolean = true
+): String {
     // 如果不是合法数字则不做处理
     if (this.substring(0, 1) != "-" && !this.replace(".", "").isDigitsOnly()) return this
 
@@ -41,7 +47,6 @@ fun String.formatNumber(formatDecimal: Boolean = false, formatInteger: Boolean =
 
     val integer: StringBuilder
     val decimal: StringBuilder
-
 
     if (pointIndex == -1) {
         integer = stringBuilder // 整数部分
@@ -54,12 +59,24 @@ fun String.formatNumber(formatDecimal: Boolean = false, formatInteger: Boolean =
         decimal.insert(0, '.')
     }
 
+    var addCharCount = 0
+
     if (formatInteger) {
         // 给整数部分添加逗号分隔符
-        if (integer.length > 3) {
+        if (integer.length > splitLength) {
             val end = if (integer[0] == '-') 2 else 1 // 判断是否有前导符号
-            for (i in integer.length-3 downTo end step 3) {
-                integer.insert(i, ",")
+            for (i in integer.length-splitLength downTo end step splitLength) {
+                integer.insert(i, addSplitChar)
+                addCharCount++
+            }
+        }
+
+        if (isAddLeadingZero) { // 添加前导 0 补满一组
+            val realLength = integer.length - addCharCount
+            if (realLength % splitLength != 0) {
+                repeat(4 - realLength % splitLength) {
+                    integer.insert(0, '0')
+                }
             }
         }
     }
@@ -80,7 +97,7 @@ fun String.formatNumber(formatDecimal: Boolean = false, formatInteger: Boolean =
 }
 
 
-fun calculate(leftValue: String, rightValue: String, operator: Operator): Result<BigDecimal> {
+fun calculate(leftValue: String, rightValue: String, operator: Operator, scale: Int = 16): Result<BigDecimal> {
     val left = BigDecimal(leftValue)
     val right = BigDecimal(rightValue)
 
@@ -98,7 +115,7 @@ fun calculate(leftValue: String, rightValue: String, operator: Operator): Result
             if (right.signum() == 0) {
                 return Result.failure(ArithmeticException("除数不能为零"))
             }
-            return  Result.success(left.divide(right, 16, RoundingMode.HALF_UP))
+            return  Result.success(left.divide(right, scale, RoundingMode.HALF_UP))
         }
         Operator.SQRT -> {
             if (left.signum() == -1) {
@@ -111,6 +128,14 @@ fun calculate(leftValue: String, rightValue: String, operator: Operator): Result
         }
         Operator.NUll -> {
             return  Result.success(left)
+        }
+        Operator.NOT,
+        Operator.AND,
+        Operator.OR ,
+        Operator.XOR,
+        Operator.LSH,
+        Operator.RSH -> {  // 这些值不会调用这个方法计算，所以直接返回错误
+            return Result.failure(NumberFormatException("错误的调用"))
         }
     }
 }
