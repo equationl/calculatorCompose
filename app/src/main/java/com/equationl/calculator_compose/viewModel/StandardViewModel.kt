@@ -186,6 +186,9 @@ class StandardViewModel @Inject constructor(
             }
             KeyIndex_Clear -> {  // "C"
                 isInputSecondValue = false
+                isCalculated = false
+                isAdvancedCalculated = false
+                isErr = false
                 viewStates = StandardState()
             }
             KeyIndex_Back -> { // "←"

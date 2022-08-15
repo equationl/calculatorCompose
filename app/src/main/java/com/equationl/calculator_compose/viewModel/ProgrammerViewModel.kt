@@ -165,6 +165,9 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
             }
             KeyIndex_Clear -> {  // "C"
                 isInputSecondValue = false
+                isCalculated = false
+                isAdvancedCalculated = false
+                isErr = false
                 viewStates = ProgrammerState(inputBase = viewStates.inputBase)
             }
             KeyIndex_Back -> { // "←"

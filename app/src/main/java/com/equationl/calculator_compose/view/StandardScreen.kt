@@ -1,6 +1,7 @@
 package com.equationl.calculator_compose.view
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -109,5 +110,7 @@ private fun KeyBoardButton(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewStandardScreen() {
-    StandardScreen(StandardViewModel(HistoryDb.create(LocalContext.current, false)))
+    Column(Modifier.fillMaxSize().background(Color.Gray)) {
+        StandardScreen(StandardViewModel(HistoryDb.create(LocalContext.current, false)))
+    }
 }
