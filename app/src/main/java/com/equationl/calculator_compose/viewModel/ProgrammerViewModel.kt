@@ -408,6 +408,11 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                 viewStates.inputOperator,
                 scale = 0
             ).fold({
+                try {
+                    it.toString().toLong()
+                } catch (e: NumberFormatException) {
+                    return Result.failure(NumberFormatException("结果溢出"))
+                }
                 return Result.success(it.toString())
             }, {
                 return Result.failure(it)

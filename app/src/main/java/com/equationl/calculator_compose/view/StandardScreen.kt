@@ -24,6 +24,7 @@ import com.equationl.calculator_compose.utils.noRippleClickable
 import com.equationl.calculator_compose.viewModel.StandardAction
 import com.equationl.calculator_compose.viewModel.StandardViewModel
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun StandardScreen(
     viewModel: StandardViewModel = hiltViewModel()
@@ -39,8 +40,25 @@ fun StandardScreen(
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = viewState.showText, modifier = Modifier.padding(8.dp), fontSize = 22.sp, fontWeight = FontWeight.Light)
-        Text(text = viewState.inputValue.formatNumber(formatDecimal = viewState.isFinalResult), modifier = Modifier.padding(8.dp), fontSize = 32.sp, fontWeight = FontWeight.Bold)
+        AnimatedContent(targetState = viewState.showText) { targetState: String ->
+            Text(text = targetState, modifier = Modifier.padding(8.dp), fontSize = 22.sp, fontWeight = FontWeight.Light)
+        }
+        AnimatedContent(
+            targetState = viewState.inputValue,
+            transitionSpec = {
+                if (targetState.length > initialState.length) {
+                    slideInVertically { height -> height } + fadeIn() with
+                            slideOutVertically { height -> -height } + fadeOut()
+                } else {
+                    slideInVertically { height -> -height } + fadeIn() with
+                            slideOutVertically { height -> height } + fadeOut()
+                }.using(
+                    SizeTransform(clip = false)
+                )
+            }
+        ) { targetState: String ->
+            Text(text = targetState.formatNumber(formatDecimal = viewState.isFinalResult), modifier = Modifier.padding(8.dp), fontSize = 32.sp, fontWeight = FontWeight.Bold)
+        }
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -110,7 +128,10 @@ private fun KeyBoardButton(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewStandardScreen() {
-    Column(Modifier.fillMaxSize().background(Color.Gray)) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Gray)) {
         StandardScreen(StandardViewModel(HistoryDb.create(LocalContext.current, false)))
     }
 }

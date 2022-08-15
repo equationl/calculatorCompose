@@ -1,5 +1,6 @@
 package com.equationl.calculator_compose.view
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,6 +26,7 @@ import com.equationl.calculator_compose.utils.formatNumber
 import com.equationl.calculator_compose.viewModel.ProgrammerAction
 import com.equationl.calculator_compose.viewModel.ProgrammerViewModel
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProgrammerScreen(
     viewModel: ProgrammerViewModel = hiltViewModel()
@@ -125,8 +127,25 @@ fun ProgrammerScreen(
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = viewState.showText, modifier = Modifier.padding(8.dp), fontSize = 22.sp, fontWeight = FontWeight.Light)
-            Text(text = viewState.inputValue, modifier = Modifier.padding(8.dp), fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            AnimatedContent(targetState = viewState.showText) { targetState: String ->
+                Text(text = targetState, modifier = Modifier.padding(8.dp), fontSize = 22.sp, fontWeight = FontWeight.Light)
+            }
+            AnimatedContent(
+                targetState = viewState.inputValue,
+                transitionSpec = {
+                    if (targetState.length > initialState.length) {
+                        slideInVertically { height -> height } + fadeIn() with
+                                slideOutVertically { height -> -height } + fadeOut()
+                    } else {
+                        slideInVertically { height -> -height } + fadeIn() with
+                                slideOutVertically { height -> height } + fadeOut()
+                    }.using(
+                        SizeTransform(clip = false)
+                    )
+                }
+            ) { targetState: String ->
+                Text(text = targetState.formatNumber(formatDecimal = viewState.isFinalResult), modifier = Modifier.padding(8.dp), fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            }
         }
     }
 

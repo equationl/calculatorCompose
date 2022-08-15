@@ -9,7 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.ScreenRotation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.equationl.calculator_compose.database.HistoryDb
 import com.equationl.calculator_compose.viewModel.HomeAction
 import com.equationl.calculator_compose.viewModel.HomeViewModel
 import com.equationl.calculator_compose.viewModel.StandardAction
@@ -51,8 +52,8 @@ fun HomeScreen(
                     )
                 }
             ) {
-                Icon(imageVector = Icons.Outlined.Menu,
-                    contentDescription = "menu",
+                Icon(imageVector = Icons.Outlined.ScreenRotation,
+                    contentDescription = "ScreenRotation",
                     modifier = Modifier.padding(4.dp))
                 Text(
                     text = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "程序员" else "标准",
@@ -85,5 +86,8 @@ fun HomeScreen(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewHome() {
-    HomeScreen(homeViewModel = HomeViewModel())
+    HomeScreen(
+        homeViewModel = HomeViewModel(),
+        standardViewModel = StandardViewModel(HistoryDb.create(LocalContext.current, false))
+    )
 }
