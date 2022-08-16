@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.equationl.calculator_compose.dataModel.*
 import com.equationl.calculator_compose.utils.calculate
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.math.BigInteger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -94,7 +95,18 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
         // 48 == '0'.code
         if (no in KeyIndex_0..KeyIndex_F) {
             val newValue: String =
-                if (viewStates.inputValue == "0") (48+no).toChar().toString()
+                if (viewStates.inputValue == "0") {
+                    if (viewStates.inputOperator != Operator.NUll) isInputSecondValue = true
+                    if (isAdvancedCalculated && viewStates.inputOperator == Operator.NUll) {  // 如果在输入高级运算符后直接输入数字，则重置状态
+                        isAdvancedCalculated = false
+                        isCalculated = false
+                        isInputSecondValue = false
+                        viewStates = ProgrammerState(inputBase = viewStates.inputBase)
+                        no.toString()
+                    }
+
+                    (48 + no).toChar().toString()
+                }
                 else if (viewStates.inputOperator != Operator.NUll && !isInputSecondValue) {
                     isInputSecondValue = true
                     (48+no).toChar().toString()
@@ -104,6 +116,13 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                     isInputSecondValue = false
                     viewStates = ProgrammerState(inputBase = viewStates.inputBase)
                     (48+no).toChar().toString()
+                }
+                else if (isAdvancedCalculated&& viewStates.inputOperator == Operator.NUll) { // 如果在输入高级运算符后直接输入数字，则重置状态
+                    isAdvancedCalculated = false
+                    isCalculated = false
+                    isInputSecondValue = false
+                    viewStates = ProgrammerState(inputBase = viewStates.inputBase)
+                    no.toString()
                 }
                 else viewStates.inputValue + (48+no).toChar().toString()
 
@@ -155,20 +174,15 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                 clickNot()
             }
             KeyIndex_CE -> { // "CE"
-                viewStates = viewStates.copy(
-                    inputValue = "0",
-                    inputHexText ="0",
-                    inputDecText ="0",
-                    inputOctText ="0",
-                    inputBinText ="0",
-                )
+                if (isCalculated) {
+                    clickClear()
+                }
+                else {
+                    clickCE()
+                }
             }
             KeyIndex_Clear -> {  // "C"
-                isInputSecondValue = false
-                isCalculated = false
-                isAdvancedCalculated = false
-                isErr = false
-                viewStates = ProgrammerState(inputBase = viewStates.inputBase)
+                clickClear()
             }
             KeyIndex_Back -> { // "←"
                 if (viewStates.inputValue != "0") {
@@ -189,14 +203,48 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
         }
     }
 
+    private fun clickCE() {
+        viewStates = viewStates.copy(
+            inputValue = "0",
+            inputHexText = "0",
+            inputDecText = "0",
+            inputOctText = "0",
+            inputBinText = "0",
+        )
+    }
+
+    private fun clickClear() {
+        isInputSecondValue = false
+        isCalculated = false
+        isAdvancedCalculated = false
+        isErr = false
+        viewStates = ProgrammerState(inputBase = viewStates.inputBase)
+    }
+
     private fun String.baseConversion(target: InputBase, current: InputBase = viewStates.inputBase): String {
         if (current == target) return this
 
-        if (target == InputBase.BIN) { // 转成二进制需要特殊处理一下
-            return java.lang.Long.toBinaryString(this.toLong(current.number))
+        // 如果直接转会出现无法直接转成有符号 long 的问题，所以这里使用 BigInteger 来转
+        // 见： https://stackoverflow.com/questions/47452924/kotlin-numberformatexception
+        val long = BigInteger(this, current.number).toLong()
+
+        if (target == InputBase.BIN) {
+            return java.lang.Long.toBinaryString(long)
         }
 
-        return this.toLong(current.number).toString(target.number).uppercase()
+        if (target == InputBase.HEX) {
+            return java.lang.Long.toHexString(long).uppercase()
+        }
+
+        if (target == InputBase.OCT) {
+            return java.lang.Long.toOctalString(long)
+        }
+
+        // 如果直接使用 toString 会造成直接添加 - 号表示负数，例如十进制的 -10 转为二进制会变成 -1010
+        // 这里需要的是无符号的表示方式，即 -10 的二进制数应该用 1111111111111111111111111111111111111111111111111111111111110110 表示
+        return long.toString(target.number).uppercase()
+
+        //return this.toLong(current.number).toString(target.number).uppercase()
     }
 
     private fun clickNot() {
@@ -245,14 +293,43 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
 
         if (isAdvancedCalculated) {
             isInputSecondValue = false
-            newState = newState.copy(
-                showText = "${viewStates.showText}${operator.showText}"
-            )
+
+            if (viewStates.inputOperator == Operator.NUll) {  // 第一次添加操作符
+                newState = newState.copy(
+                    showText = "${viewStates.showText}${operator.showText}"
+                )
+            }
+            else { // 不是第一次添加操作符，则需要把计算结果置于左边，并去掉高级运算的符号
+                isCalculated = false
+                isInputSecondValue = false
+
+                clickEqual()
+
+                newState = newState.copy(
+                    lastInputValue = viewStates.inputValue,
+                    showText = "${viewStates.inputValue}${operator.showText}",
+                    inputValue = viewStates.inputValue
+                )
+            }
         }
         else {
-            newState = newState.copy(
-                showText = "${viewStates.inputValue}${operator.showText}"
-            )
+            if (viewStates.inputOperator == Operator.NUll) { // 第一次添加操作符
+                newState = newState.copy(
+                    showText = "${viewStates.inputValue}${operator.showText}"
+                )
+            }
+            else { // 不是第一次添加操作符，则应该把结果算出来后放到左边
+                isCalculated = false
+                isInputSecondValue = false
+
+                clickEqual()
+
+                newState = newState.copy(
+                    lastInputValue = viewStates.inputValue,
+                    showText = "${viewStates.inputValue}${operator.showText}",
+                    inputValue = viewStates.inputValue
+                )
+            }
         }
 
         viewStates = newState
@@ -285,7 +362,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                    result.getOrNull().toString().baseConversion(viewStates.inputBase, InputBase.DEC)
                 } catch (e: NumberFormatException) {
                     viewStates = viewStates.copy(
-                        inputValue = "溢出",
+                        inputValue = "Err: 溢出",
                         inputHexText = "溢出",
                         inputDecText = "溢出",
                         inputOctText = "溢出",
@@ -383,7 +460,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                             (leftNumber.toLong() shl rightNumber.toInt()).toString()
                         )
                     } catch (e: NumberFormatException) {
-                        Result.failure(NumberFormatException("结果未定义"))
+                        Result.failure(NumberFormatException("Err: 结果未定义"))
                     }
                 }
                 Operator.RSH -> {
@@ -392,12 +469,12 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                             (leftNumber.toLong() shr rightNumber.toInt()).toString()
                         )
                     } catch (e: NumberFormatException) {
-                        Result.failure(NumberFormatException("结果未定义"))
+                        Result.failure(NumberFormatException("Err: 结果未定义"))
                     }
                 }
                 else -> {
                     // 剩下的操作不应该由此处计算，所以直接返回错误
-                    return Result.failure(NumberFormatException("错误的调用2"))
+                    return Result.failure(NumberFormatException("Err: 错误的调用2"))
                 }
             }
         }
@@ -411,7 +488,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                 try {
                     it.toString().toLong()
                 } catch (e: NumberFormatException) {
-                    return Result.failure(NumberFormatException("结果溢出"))
+                    return Result.failure(NumberFormatException("Err: 结果溢出"))
                 }
                 return Result.success(it.toString())
             }, {

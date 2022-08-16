@@ -5,7 +5,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.core.text.isDigitsOnly
 import com.equationl.calculator_compose.dataModel.Operator
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -29,7 +28,13 @@ fun BigDecimal.sqrt(scale: Int): BigDecimal {
 }
 
 /**
- * 格式化数字（添加逗号分隔符）
+ * 格式化显示的数字
+ *
+ * @param addSplitChar 添加的分隔符
+ * @param splitLength 间隔多少个字符添加分割符
+ * @param isAddLeadingZero 是否在不满足 [splitLength] 一组的数字前添加 0
+ * @param formatDecimal 是否格式化小数部分（移除末尾多余的0）
+ * @param formatInteger 是否格式化整数部分（添加分隔符或前导0）
  * */
 fun String.formatNumber(
     addSplitChar: String = ",",
@@ -38,8 +43,8 @@ fun String.formatNumber(
     formatDecimal: Boolean = false,
     formatInteger: Boolean = true
 ): String {
-    // 如果不是合法数字则不做处理
-    if (this.substring(0, 1) != "-" && !this.replace(".", "").isDigitsOnly()) return this
+    // 如果是错误提示信息则不做处理
+    if (this.length >= 3 && this.substring(0, 3) == "Err") return this
 
     val stringBuilder = StringBuilder(this)
 
@@ -113,13 +118,13 @@ fun calculate(leftValue: String, rightValue: String, operator: Operator, scale: 
         }
         Operator.Divide -> {
             if (right.signum() == 0) {
-                return Result.failure(ArithmeticException("除数不能为零"))
+                return Result.failure(ArithmeticException("Err: 除数不能为零"))
             }
             return  Result.success(left.divide(right, scale, RoundingMode.HALF_UP))
         }
         Operator.SQRT -> {
             if (left.signum() == -1) {
-                return Result.failure(ArithmeticException("无效输入"))
+                return Result.failure(ArithmeticException("Err: 无效输入"))
             }
             return Result.success(left.sqrt(16))
         }
@@ -135,7 +140,7 @@ fun calculate(leftValue: String, rightValue: String, operator: Operator, scale: 
         Operator.XOR,
         Operator.LSH,
         Operator.RSH -> {  // 这些值不会调用这个方法计算，所以直接返回错误
-            return Result.failure(NumberFormatException("错误的调用"))
+            return Result.failure(NumberFormatException("Err: 错误的调用"))
         }
     }
 }

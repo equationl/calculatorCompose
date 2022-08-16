@@ -19,8 +19,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.equationl.calculator_compose.dataModel.StandardKeyBoardBtn
 import com.equationl.calculator_compose.database.HistoryDb
+import com.equationl.calculator_compose.ui.theme.InputLargeFontSize
+import com.equationl.calculator_compose.ui.theme.ShowNormalFontSize
 import com.equationl.calculator_compose.utils.formatNumber
 import com.equationl.calculator_compose.utils.noRippleClickable
+import com.equationl.calculator_compose.view.widgets.AutoSizeText
 import com.equationl.calculator_compose.viewModel.StandardAction
 import com.equationl.calculator_compose.viewModel.StandardViewModel
 
@@ -41,7 +44,12 @@ fun StandardScreen(
         verticalArrangement = Arrangement.Center
     ) {
         AnimatedContent(targetState = viewState.showText) { targetState: String ->
-            Text(text = targetState, modifier = Modifier.padding(8.dp), fontSize = 22.sp, fontWeight = FontWeight.Light)
+            Row(modifier = Modifier.padding(8.dp)) {
+                AutoSizeText(
+                    text = targetState,
+                    fontSize = ShowNormalFontSize,
+                    fontWeight = FontWeight.Light)
+            }
         }
         AnimatedContent(
             targetState = viewState.inputValue,
@@ -57,7 +65,14 @@ fun StandardScreen(
                 )
             }
         ) { targetState: String ->
-            Text(text = targetState.formatNumber(formatDecimal = viewState.isFinalResult), modifier = Modifier.padding(8.dp), fontSize = 32.sp, fontWeight = FontWeight.Bold)
+
+            Row(modifier = Modifier.padding(8.dp)) {
+                AutoSizeText(
+                    text = targetState.formatNumber(formatDecimal = viewState.isFinalResult),
+                    fontSize = InputLargeFontSize,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
     }
 

@@ -106,12 +106,29 @@ class StandardViewModel @Inject constructor(
 
         if (no in KeyIndex_0..KeyIndex_9) {
             val newValue =
-                if (viewStates.inputValue == "0") no.toString()
+                if (viewStates.inputValue == "0") {
+                    if (viewStates.inputOperator != Operator.NUll) isInputSecondValue = true
+                    if (isAdvancedCalculated && viewStates.inputOperator == Operator.NUll) {  // 如果在输入高级运算符后直接输入数字，则重置状态
+                        isAdvancedCalculated = false
+                        isCalculated = false
+                        isInputSecondValue = false
+                        viewStates = StandardState()
+                        no.toString()
+                    }
+                    no.toString()
+                }
                 else if (viewStates.inputOperator != Operator.NUll && !isInputSecondValue) {
                     isInputSecondValue = true
                     no.toString()
                 }
                 else if (isCalculated) {
+                    isCalculated = false
+                    isInputSecondValue = false
+                    viewStates = StandardState()
+                    no.toString()
+                }
+                else if (isAdvancedCalculated&& viewStates.inputOperator == Operator.NUll) { // 如果在输入高级运算符后直接输入数字，则重置状态
+                    isAdvancedCalculated = false
                     isCalculated = false
                     isInputSecondValue = false
                     viewStates = StandardState()
@@ -182,14 +199,15 @@ class StandardViewModel @Inject constructor(
                 clickEqual()
             }
             KeyIndex_CE -> { // "CE"
-                viewStates = viewStates.copy(inputValue = "0")
+                if (isCalculated) {
+                    clickClear()
+                }
+                else {
+                    viewStates = viewStates.copy(inputValue = "0")
+                }
             }
             KeyIndex_Clear -> {  // "C"
-                isInputSecondValue = false
-                isCalculated = false
-                isAdvancedCalculated = false
-                isErr = false
-                viewStates = StandardState()
+                clickClear()
             }
             KeyIndex_Back -> { // "←"
                 if (viewStates.inputValue != "0") {
@@ -199,6 +217,14 @@ class StandardViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun clickClear() {
+        isInputSecondValue = false
+        isCalculated = false
+        isAdvancedCalculated = false
+        isErr = false
+        viewStates = StandardState()
     }
 
     private fun clickReciprocal() {
@@ -385,14 +411,44 @@ class StandardViewModel @Inject constructor(
 
         if (isAdvancedCalculated) {
             isInputSecondValue = false
-            newState = newState.copy(
-                showText = "${viewStates.showText}${operator.showText}"
-            )
+
+            if (viewStates.inputOperator == Operator.NUll) {  // 第一次添加操作符
+                newState = newState.copy(
+                    showText = "${viewStates.showText}${operator.showText}"
+                )
+            }
+            else {  // 不是第一次添加操作符，则需要把计算结果置于左边，并去掉高级运算的符号
+                isCalculated = false
+                isInputSecondValue = false
+
+                clickEqual()
+
+                newState = newState.copy(
+                    lastInputValue = viewStates.inputValue,
+                    showText = "${viewStates.inputValue}${operator.showText}",
+                    inputValue = viewStates.inputValue
+                )
+            }
+
         }
         else {
-            newState = newState.copy(
-                showText = "${viewStates.inputValue}${operator.showText}"
-            )
+            if (viewStates.inputOperator == Operator.NUll) { // 第一次添加操作符
+                newState = newState.copy(
+                    showText = "${viewStates.inputValue}${operator.showText}"
+                )
+            }
+            else { // 不是第一次添加操作符，则应该把结果算出来后放到左边
+                isCalculated = false
+                isInputSecondValue = false
+
+                clickEqual()
+
+                newState = newState.copy(
+                    lastInputValue = viewStates.inputValue,
+                    showText = "${viewStates.inputValue}${operator.showText}",
+                    inputValue = viewStates.inputValue
+                )
+            }
         }
 
         viewStates = newState
