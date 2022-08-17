@@ -2,7 +2,6 @@ package com.equationl.calculator_compose.view
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -13,7 +12,6 @@ import androidx.compose.material.icons.outlined.ScreenRotation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -38,7 +36,7 @@ fun HomeScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color.Gray)) {
+    ) {
 
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             Row(

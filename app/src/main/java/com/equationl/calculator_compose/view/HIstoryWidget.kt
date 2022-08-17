@@ -8,19 +8,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.equationl.calculator_compose.dataModel.HistoryData
 import com.equationl.calculator_compose.dataModel.Operator
+import com.equationl.calculator_compose.ui.theme.CalculatorComposeTheme
 
 /**
  * @param onDelete 如果 item 为 null 则表示删除所有历史记录，否则删除指定的 item
@@ -33,7 +34,7 @@ fun HistoryWidget(
     onDelete: (item: HistoryData?) -> Unit
 ) {
 
-    Column(Modifier.fillMaxSize().background(Color.LightGray)) {
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colors.primaryVariant)) {
         LazyColumn(modifier = Modifier.weight(9f)) {
             items(
                 items = historyList,
@@ -108,9 +109,12 @@ fun HistoryPreview() {
         HistoryData(29, "1+1=", "1", "1", Operator.ADD, "2"),
         HistoryData(30, "1+1=", "1", "1", Operator.ADD, "2"),
     )
-    HistoryWidget(
-        historyList = testList,
-        onClick = {},
-        onDelete = {}
-    )
+
+    CalculatorComposeTheme(false) {
+        HistoryWidget(
+            historyList = testList,
+            onClick = {},
+            onDelete = {}
+        )
+    }
 }

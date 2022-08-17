@@ -17,8 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.equationl.calculator_compose.dataModel.StandardKeyBoardBtn
+import com.equationl.calculator_compose.dataModel.standardKeyBoardBtn
 import com.equationl.calculator_compose.database.HistoryDb
+import com.equationl.calculator_compose.ui.theme.CalculatorComposeTheme
 import com.equationl.calculator_compose.ui.theme.InputLargeFontSize
 import com.equationl.calculator_compose.ui.theme.ShowNormalFontSize
 import com.equationl.calculator_compose.utils.formatNumber
@@ -99,7 +100,7 @@ fun StandardScreen(
 @Composable
 fun StandardKeyBoard(viewModel: StandardViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
-        for (btnRow in StandardKeyBoardBtn) {
+        for (btnRow in standardKeyBoardBtn()) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)) {
@@ -143,10 +144,25 @@ private fun KeyBoardButton(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewStandardScreen() {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(Color.Gray)) {
-        StandardScreen(StandardViewModel(HistoryDb.create(LocalContext.current, false)))
+    CalculatorComposeTheme(false) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)) {
+            StandardScreen(StandardViewModel(HistoryDb.create(LocalContext.current, false)))
+        }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun PreviewStandardScreenDark() {
+    CalculatorComposeTheme(true) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)) {
+            StandardScreen(StandardViewModel(HistoryDb.create(LocalContext.current, false)))
+        }
     }
 }

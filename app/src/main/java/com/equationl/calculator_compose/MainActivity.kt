@@ -6,9 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import com.equationl.calculator_compose.ui.theme.CalculatorComposeTheme
 import com.equationl.calculator_compose.view.HomeScreen
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,11 +19,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalculatorComposeTheme {
-                // A surface container using the 'background' color from the theme
+                val backgroundColor = MaterialTheme.colors.background
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = backgroundColor
                 ) {
+                    val systemUiController = rememberSystemUiController()
+                    val useDarkIcons = MaterialTheme.colors.isLight
+
+                    SideEffect {
+                        systemUiController.setSystemBarsColor(
+                            color = backgroundColor,
+                            darkIcons = useDarkIcons
+                        )
+                    }
+
                     HomeScreen()
                 }
             }

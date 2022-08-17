@@ -1,5 +1,7 @@
 package com.equationl.calculator_compose.dataModel
 
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 // 数字按键
@@ -36,8 +38,6 @@ const val KeyIndex_Rsh = 111
 const val KeyIndex_And = 112
 const val KeyIndex_Or = 113
 const val KeyIndex_Not = 114
-const val KeyIndex_NAnd = 115
-const val KeyIndex_NOr = 116
 const val KeyIndex_XOr = 117
 
 // 功能按键
@@ -46,111 +46,115 @@ const val KeyIndex_CE = 1001
 const val KeyIndex_Clear = 1002
 const val KeyIndex_Back = 1003
 
-// 预留按键
-const val KeyIndex_Null = -1
 
+@Composable
+fun numberColor(): Color = MaterialTheme.colors.secondary
 
-val NumberColor = Color.White
-val FunctionColor = Color.LightGray
-val EqualColor = Color.Cyan
-val UnavailableColor = Color.Transparent
+@Composable
+fun functionColor(): Color = MaterialTheme.colors.primary
 
-val StandardKeyBoardBtn = listOf(
-    listOf(
-        KeyBoardData("%", FunctionColor,  KeyIndex_Percentage),
-        KeyBoardData("CE", FunctionColor, KeyIndex_CE),
-        KeyBoardData("C", FunctionColor,  KeyIndex_Clear),
-        KeyBoardData("←", FunctionColor,  KeyIndex_Back),
-    ),
-    listOf(
-        KeyBoardData("1/x", FunctionColor, KeyIndex_Reciprocal),
-        KeyBoardData("x²", FunctionColor, KeyIndex_Pow2),
-        KeyBoardData("√x", FunctionColor, KeyIndex_Sqrt),
-        KeyBoardData(Operator.Divide.showText, FunctionColor, KeyIndex_Divide),
-    ),
-    listOf(
-        KeyBoardData("7", NumberColor, KeyIndex_7),
-        KeyBoardData("8", NumberColor, KeyIndex_8),
-        KeyBoardData("9", NumberColor, KeyIndex_9),
-        KeyBoardData(Operator.MULTIPLY.showText, FunctionColor, KeyIndex_Multiply),
-    ),
-    listOf(
-        KeyBoardData("4", NumberColor, KeyIndex_4),
-        KeyBoardData("5", NumberColor, KeyIndex_5),
-        KeyBoardData("6", NumberColor, KeyIndex_6),
-        KeyBoardData(Operator.MINUS.showText, FunctionColor, KeyIndex_Minus),
-    ),
-    listOf(
-        KeyBoardData("1", NumberColor, KeyIndex_1),
-        KeyBoardData("2", NumberColor, KeyIndex_2),
-        KeyBoardData("3", NumberColor, KeyIndex_3),
-        KeyBoardData(Operator.ADD.showText, FunctionColor, KeyIndex_Add),
-    ),
-    listOf(
-        KeyBoardData("+/-", NumberColor, KeyIndex_NegativeNumber),
-        KeyBoardData("0", NumberColor, KeyIndex_0),
-        KeyBoardData(".", NumberColor, KeyIndex_Point),
-        KeyBoardData("=", EqualColor, KeyIndex_Equal),
-    )
-)
+@Composable
+fun equalColor(): Color = MaterialTheme.colors.primaryVariant
 
-val ProgrammerLeftKeyBoardBtn = listOf(
-    listOf(
-        KeyBoardData("D", NumberColor,  KeyIndex_D),
-        KeyBoardData("E", NumberColor,  KeyIndex_E),
-        KeyBoardData("F", NumberColor,  KeyIndex_F)
-    ),
-    listOf(
-        KeyBoardData("A", NumberColor,  KeyIndex_A),
-        KeyBoardData("B", NumberColor,  KeyIndex_B),
-        KeyBoardData("C", NumberColor,  KeyIndex_C)
+@Composable
+fun standardKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
+        listOf(
+            KeyBoardData("%", functionColor(),  KeyIndex_Percentage),
+            KeyBoardData("CE", functionColor(), KeyIndex_CE),
+            KeyBoardData("C", functionColor(),  KeyIndex_Clear),
+            KeyBoardData("←", functionColor(),  KeyIndex_Back),
         ),
+        listOf(
+            KeyBoardData("1/x", functionColor(), KeyIndex_Reciprocal),
+            KeyBoardData("x²", functionColor(), KeyIndex_Pow2),
+            KeyBoardData("√x", functionColor(), KeyIndex_Sqrt),
+            KeyBoardData(Operator.Divide.showText, functionColor(), KeyIndex_Divide),
+        ),
+        listOf(
+            KeyBoardData("7", numberColor(), KeyIndex_7),
+            KeyBoardData("8", numberColor(), KeyIndex_8),
+            KeyBoardData("9", numberColor(), KeyIndex_9),
+            KeyBoardData(Operator.MULTIPLY.showText, functionColor(), KeyIndex_Multiply),
+        ),
+        listOf(
+            KeyBoardData("4", numberColor(), KeyIndex_4),
+            KeyBoardData("5", numberColor(), KeyIndex_5),
+            KeyBoardData("6", numberColor(), KeyIndex_6),
+            KeyBoardData(Operator.MINUS.showText, functionColor(), KeyIndex_Minus),
+        ),
+        listOf(
+            KeyBoardData("1", numberColor(), KeyIndex_1),
+            KeyBoardData("2", numberColor(), KeyIndex_2),
+            KeyBoardData("3", numberColor(), KeyIndex_3),
+            KeyBoardData(Operator.ADD.showText, functionColor(), KeyIndex_Add),
+        ),
+        listOf(
+            KeyBoardData("+/-", functionColor(), KeyIndex_NegativeNumber),
+            KeyBoardData("0", numberColor(), KeyIndex_0),
+            KeyBoardData(".", functionColor(), KeyIndex_Point),
+            KeyBoardData("=", equalColor(), KeyIndex_Equal),
+        )
+    )
+
+@Composable
+fun programmerLeftKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
     listOf(
-        KeyBoardData("7", NumberColor, KeyIndex_7),
-        KeyBoardData("8", NumberColor,  KeyIndex_8),
-        KeyBoardData("9", NumberColor,  KeyIndex_9)
+        KeyBoardData("D", numberColor(),  KeyIndex_D),
+        KeyBoardData("E", numberColor(),  KeyIndex_E),
+        KeyBoardData("F", numberColor(),  KeyIndex_F)
     ),
     listOf(
-        KeyBoardData("4", NumberColor, KeyIndex_4),
-        KeyBoardData("5", NumberColor,  KeyIndex_5),
-        KeyBoardData("6", NumberColor,  KeyIndex_6)
+        KeyBoardData("A", numberColor(),  KeyIndex_A),
+        KeyBoardData("B", numberColor(),  KeyIndex_B),
+        KeyBoardData("C", numberColor(),  KeyIndex_C)
     ),
     listOf(
-        KeyBoardData("1", NumberColor, KeyIndex_1),
-        KeyBoardData("2", NumberColor,  KeyIndex_2),
-        KeyBoardData("3", NumberColor,  KeyIndex_3)
+        KeyBoardData("7", numberColor(), KeyIndex_7),
+        KeyBoardData("8", numberColor(),  KeyIndex_8),
+        KeyBoardData("9", numberColor(),  KeyIndex_9)
     ),
     listOf(
-        KeyBoardData("<<", FunctionColor, KeyIndex_Lsh),
-        KeyBoardData("0", NumberColor,  KeyIndex_0),
-        KeyBoardData(">>", FunctionColor,  KeyIndex_Rsh)
+        KeyBoardData("4", numberColor(), KeyIndex_4),
+        KeyBoardData("5", numberColor(),  KeyIndex_5),
+        KeyBoardData("6", numberColor(),  KeyIndex_6)
+    ),
+    listOf(
+        KeyBoardData("1", numberColor(), KeyIndex_1),
+        KeyBoardData("2", numberColor(),  KeyIndex_2),
+        KeyBoardData("3", numberColor(),  KeyIndex_3)
+    ),
+    listOf(
+        KeyBoardData("<<", functionColor(), KeyIndex_Lsh),
+        KeyBoardData("0", numberColor(),  KeyIndex_0),
+        KeyBoardData(">>", functionColor(),  KeyIndex_Rsh)
     )
 )
 
-val ProgrammerRightKeyBoardBtn = listOf(
+@Composable
+fun programmerRightKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
     listOf(
-        KeyBoardData("C", FunctionColor,  KeyIndex_Clear),
-        KeyBoardData("←", FunctionColor,  KeyIndex_Back)
+        KeyBoardData("C", functionColor(),  KeyIndex_Clear),
+        KeyBoardData("←", functionColor(),  KeyIndex_Back)
     ),
     listOf(
-        KeyBoardData("CE", FunctionColor,  KeyIndex_CE),
-        KeyBoardData(Operator.Divide.showText, FunctionColor,  KeyIndex_Divide)
+        KeyBoardData("CE", functionColor(),  KeyIndex_CE),
+        KeyBoardData(Operator.Divide.showText, functionColor(),  KeyIndex_Divide)
     ),
     listOf(
-        KeyBoardData("NOT", FunctionColor,  KeyIndex_Not),
-        KeyBoardData(Operator.MULTIPLY.showText, FunctionColor,  KeyIndex_Multiply)
+        KeyBoardData("NOT", functionColor(),  KeyIndex_Not),
+        KeyBoardData(Operator.MULTIPLY.showText, functionColor(),  KeyIndex_Multiply)
     ),
     listOf(
-        KeyBoardData("XOR", FunctionColor,  KeyIndex_XOr),
-        KeyBoardData(Operator.MINUS.showText, FunctionColor,  KeyIndex_Minus)
+        KeyBoardData("XOR", functionColor(),  KeyIndex_XOr),
+        KeyBoardData(Operator.MINUS.showText, functionColor(),  KeyIndex_Minus)
     ),
     listOf(
-        KeyBoardData("AND", FunctionColor, KeyIndex_And),
-        KeyBoardData(Operator.ADD.showText, FunctionColor,  KeyIndex_Add)
+        KeyBoardData("AND", functionColor(), KeyIndex_And),
+        KeyBoardData(Operator.ADD.showText, functionColor(),  KeyIndex_Add)
     ),
     listOf(
-        KeyBoardData("OR", FunctionColor,  KeyIndex_Or),
-        KeyBoardData("=", FunctionColor,  KeyIndex_Equal)
+        KeyBoardData("OR", functionColor(),  KeyIndex_Or),
+        KeyBoardData("=", equalColor(),  KeyIndex_Equal)
     )
 )
 

@@ -19,12 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.equationl.calculator_compose.dataModel.InputBase
-import com.equationl.calculator_compose.dataModel.ProgrammerLeftKeyBoardBtn
-import com.equationl.calculator_compose.dataModel.ProgrammerRightKeyBoardBtn
-import com.equationl.calculator_compose.ui.theme.InputLargeFontSize
-import com.equationl.calculator_compose.ui.theme.InputNormalFontSize
-import com.equationl.calculator_compose.ui.theme.InputTitleContentSize
-import com.equationl.calculator_compose.ui.theme.ShowNormalFontSize
+import com.equationl.calculator_compose.dataModel.programmerLeftKeyBoardBtn
+import com.equationl.calculator_compose.dataModel.programmerRightKeyBoardBtn
+import com.equationl.calculator_compose.ui.theme.*
 import com.equationl.calculator_compose.utils.formatNumber
 import com.equationl.calculator_compose.view.widgets.AutoSizeText
 import com.equationl.calculator_compose.viewModel.ProgrammerAction
@@ -34,11 +31,6 @@ import com.equationl.calculator_compose.viewModel.ProgrammerViewModel
 fun ProgrammerScreen(
     viewModel: ProgrammerViewModel = hiltViewModel()
 ) {
-    /*val viewState = viewModel.viewStates
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp*/
-
-
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween) {
         // 左侧键盘
@@ -196,7 +188,7 @@ private fun LeftKeyBoard(viewModel: ProgrammerViewModel) {
     val viewState = viewModel.viewStates
 
     Column(modifier = Modifier.fillMaxSize()) {
-        for (btnRow in ProgrammerLeftKeyBoardBtn) {
+        for (btnRow in programmerLeftKeyBoardBtn()) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)) {
@@ -228,7 +220,7 @@ private fun RightKeyBoard(viewModel: ProgrammerViewModel) {
     val viewState = viewModel.viewStates
 
     Column(modifier = Modifier.fillMaxSize()) {
-        for (btnRow in ProgrammerRightKeyBoardBtn) {
+        for (btnRow in programmerRightKeyBoardBtn()) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)) {
@@ -282,10 +274,25 @@ private fun KeyBoardButton(
 @Preview(showSystemUi = true, device = Devices.AUTOMOTIVE_1024p, widthDp = 1024, heightDp = 720)
 @Composable
 fun PreviewProgrammerScreen() {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(Color.Gray)) {
-        ProgrammerScreen(ProgrammerViewModel())
+    CalculatorComposeTheme(false) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)) {
+            ProgrammerScreen(ProgrammerViewModel())
+        }
+    }
+}
+
+@Preview(showSystemUi = true, device = Devices.AUTOMOTIVE_1024p, widthDp = 1024, heightDp = 720)
+@Composable
+fun PreviewProgrammerScreenDark() {
+    CalculatorComposeTheme(true) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)) {
+            ProgrammerScreen(ProgrammerViewModel())
+        }
     }
 }
