@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.equationl.calculator_compose.dataModel.InputBase
-import com.equationl.calculator_compose.dataModel.ProgrammerKeyBoardBtn
+import com.equationl.calculator_compose.dataModel.ProgrammerLeftKeyBoardBtn
+import com.equationl.calculator_compose.dataModel.ProgrammerRightKeyBoardBtn
 import com.equationl.calculator_compose.ui.theme.InputLargeFontSize
 import com.equationl.calculator_compose.ui.theme.InputNormalFontSize
 import com.equationl.calculator_compose.ui.theme.InputTitleContentSize
@@ -30,108 +30,46 @@ import com.equationl.calculator_compose.view.widgets.AutoSizeText
 import com.equationl.calculator_compose.viewModel.ProgrammerAction
 import com.equationl.calculator_compose.viewModel.ProgrammerViewModel
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProgrammerScreen(
     viewModel: ProgrammerViewModel = hiltViewModel()
 ) {
-    val viewState = viewModel.viewStates
+    /*val viewState = viewModel.viewStates
     val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+    val screenWidth = configuration.screenWidthDp.dp*/
 
-    Row(
+
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween) {
+        // 左侧键盘
+        Row(modifier = Modifier.weight(1.5f)) {
+            LeftKeyBoard(viewModel = viewModel)
+        }
+
+        // 显示数据
+        Row(modifier = Modifier.weight(2f)) {
+            CenterScreen(viewModel = viewModel)
+        }
+
+        // 右侧键盘
+        Row(modifier = Modifier.weight(1.3f)) {
+            RightKeyBoard(viewModel = viewModel)
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun CenterScreen(viewModel: ProgrammerViewModel) {
+    val viewState = viewModel.viewStates
+    Column(
         Modifier
-            .fillMaxWidth()
-            .height(180.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceAround
     ) {
         Column(
-            Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(2.dp)
-                    .clickable { viewModel.dispatch(ProgrammerAction.ChangeInputBase(InputBase.HEX)) }
-            ) {
-                Text(
-                    text = "HEX",
-                    fontSize =
-                        if (viewState.inputBase == InputBase.HEX) InputTitleContentSize
-                        else InputNormalFontSize,
-                    fontWeight = if (viewState.inputBase == InputBase.HEX) FontWeight.Bold else null
-                )
-
-                Text(
-                    text = viewState.inputHexText.formatNumber(addSplitChar = " ", splitLength = 4),
-                    fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(2.dp)
-                    .clickable { viewModel.dispatch(ProgrammerAction.ChangeInputBase(InputBase.DEC)) }
-            ) {
-                Text(
-                    text = "DEC",
-                    fontSize =
-                        if (viewState.inputBase == InputBase.DEC) InputTitleContentSize
-                        else InputNormalFontSize,
-                    fontWeight = if (viewState.inputBase == InputBase.DEC) FontWeight.Bold else null
-                )
-
-                Text(
-                    text = viewState.inputDecText.formatNumber(),
-                    fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(2.dp)
-                    .clickable { viewModel.dispatch(ProgrammerAction.ChangeInputBase(InputBase.OCT)) }
-            ) {
-                Text(
-                    text = "OCT",
-                    fontSize =
-                        if (viewState.inputBase == InputBase.OCT) InputTitleContentSize
-                        else InputNormalFontSize,
-                    fontWeight = if (viewState.inputBase == InputBase.OCT) FontWeight.Bold else null
-                )
-
-                Text(
-                    text = viewState.inputOctText.formatNumber(addSplitChar = " "),
-                    fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(2.dp)
-                    .clickable { viewModel.dispatch(ProgrammerAction.ChangeInputBase(InputBase.BIN)) }
-            ) {
-                Text(
-                    text = "BIN",
-                    fontSize =
-                        if (viewState.inputBase == InputBase.BIN) InputTitleContentSize
-                        else InputNormalFontSize,
-                    fontWeight = if (viewState.inputBase == InputBase.BIN) FontWeight.Bold else null
-                )
-
-                Text(
-                    text = viewState.inputBinText.formatNumber(addSplitChar = " ", splitLength = 4, isAddLeadingZero = viewState.inputBinText != "0"),
-                    fontSize = InputNormalFontSize,
-                    modifier = Modifier.widthIn(0.dp, screenWidth/2).padding(start = 8.dp),
-                )
-            }
-        }
-        
-        Column(
-            Modifier
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.End
         ) {
             AnimatedContent(targetState = viewState.showText) { targetState: String ->
                 Text(text = targetState, modifier = Modifier.padding(8.dp), fontSize = ShowNormalFontSize, fontWeight = FontWeight.Light)
@@ -166,19 +104,131 @@ fun ProgrammerScreen(
                 }
             }
         }
-    }
 
-    Column(Modifier.fillMaxSize()) {
-        ProgrammerKeyBoard(viewModel)
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(2.dp)
+                    .clickable { viewModel.dispatch(ProgrammerAction.ChangeInputBase(InputBase.HEX)) }
+            ) {
+                Text(
+                    text = "HEX",
+                    fontSize =
+                    if (viewState.inputBase == InputBase.HEX) InputTitleContentSize
+                    else InputNormalFontSize,
+                    fontWeight = if (viewState.inputBase == InputBase.HEX) FontWeight.Bold else null
+                )
+
+                Text(
+                    text = viewState.inputHexText.formatNumber(addSplitChar = " ", splitLength = 4),
+                    fontSize = InputNormalFontSize,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(2.dp)
+                    .clickable { viewModel.dispatch(ProgrammerAction.ChangeInputBase(InputBase.DEC)) }
+            ) {
+                Text(
+                    text = "DEC",
+                    fontSize =
+                    if (viewState.inputBase == InputBase.DEC) InputTitleContentSize
+                    else InputNormalFontSize,
+                    fontWeight = if (viewState.inputBase == InputBase.DEC) FontWeight.Bold else null
+                )
+
+                Text(
+                    text = viewState.inputDecText.formatNumber(),
+                    fontSize = InputNormalFontSize,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(2.dp)
+                    .clickable { viewModel.dispatch(ProgrammerAction.ChangeInputBase(InputBase.OCT)) }
+            ) {
+                Text(
+                    text = "OCT",
+                    fontSize =
+                    if (viewState.inputBase == InputBase.OCT) InputTitleContentSize
+                    else InputNormalFontSize,
+                    fontWeight = if (viewState.inputBase == InputBase.OCT) FontWeight.Bold else null
+                )
+
+                Text(
+                    text = viewState.inputOctText.formatNumber(addSplitChar = " "),
+                    fontSize = InputNormalFontSize,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(2.dp)
+                    .clickable { viewModel.dispatch(ProgrammerAction.ChangeInputBase(InputBase.BIN)) }
+            ) {
+                Text(
+                    text = "BIN",
+                    fontSize =
+                    if (viewState.inputBase == InputBase.BIN) InputTitleContentSize
+                    else InputNormalFontSize,
+                    fontWeight = if (viewState.inputBase == InputBase.BIN) FontWeight.Bold else null
+                )
+
+                Text(
+                    text = viewState.inputBinText.formatNumber(addSplitChar = " ", splitLength = 4, isAddLeadingZero = viewState.inputBinText != "0"),
+                    fontSize = InputNormalFontSize,
+                    modifier = Modifier
+                        .padding(start = 8.dp),
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun ProgrammerKeyBoard(viewModel: ProgrammerViewModel) {
+private fun LeftKeyBoard(viewModel: ProgrammerViewModel) {
     val viewState = viewModel.viewStates
 
     Column(modifier = Modifier.fillMaxSize()) {
-        for (btnRow in ProgrammerKeyBoardBtn) {
+        for (btnRow in ProgrammerLeftKeyBoardBtn) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)) {
+                for (btn in btnRow) {
+                    val isAvailable = if (btn.isAvailable) {
+                        btn.index !in viewState.inputBase.forbidBtn
+                    }
+                    else {
+                        false
+                    }
+
+                    Row(modifier = Modifier.weight(1f)) {
+                        KeyBoardButton(
+                            text = btn.text,
+                            onClick = { viewModel.dispatch(ProgrammerAction.ClickBtn(btn.index)) },
+                            isAvailable = isAvailable,
+                            backGround = btn.background,
+                            paddingValues = PaddingValues(0.5.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RightKeyBoard(viewModel: ProgrammerViewModel) {
+    val viewState = viewModel.viewStates
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        for (btnRow in ProgrammerRightKeyBoardBtn) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)) {

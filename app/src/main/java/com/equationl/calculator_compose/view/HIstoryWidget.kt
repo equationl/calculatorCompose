@@ -23,7 +23,7 @@ import com.equationl.calculator_compose.dataModel.HistoryData
 import com.equationl.calculator_compose.dataModel.Operator
 
 /**
- * @param onDelete 如果 item 为空则表示删除所有历史记录，否则删除指定的 item
+ * @param onDelete 如果 item 为 null 则表示删除所有历史记录，否则删除指定的 item
  * */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -34,7 +34,7 @@ fun HistoryWidget(
 ) {
 
     Column(Modifier.fillMaxSize().background(Color.LightGray)) {
-        LazyColumn(modifier = Modifier.weight(9.5f)) {
+        LazyColumn(modifier = Modifier.weight(9f)) {
             items(
                 items = historyList,
                 key = { it.id },
@@ -56,13 +56,15 @@ fun HistoryWidget(
         }
 
         Row(
-            Modifier.fillMaxSize().weight(0.5f).padding(8.dp),
+            Modifier.fillMaxSize().weight(1f).padding(16.dp),
             horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Bottom
         ) {
             Icon(
                 imageVector = Icons.Outlined.Delete,
                 contentDescription = "delete",
-                Modifier.clickable {
+                Modifier
+                    .fillMaxHeight()
+                    .clickable {
                     onDelete(null)
                 })
         }

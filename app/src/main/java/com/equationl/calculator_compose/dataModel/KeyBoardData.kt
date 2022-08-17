@@ -94,48 +94,63 @@ val StandardKeyBoardBtn = listOf(
     )
 )
 
-val ProgrammerKeyBoardBtn = listOf(
-    listOf(
-        KeyBoardData("A", NumberColor,  KeyIndex_A),
-        KeyBoardData("XOR", FunctionColor,  KeyIndex_XOr),
-        KeyBoardData("CE", FunctionColor,  KeyIndex_CE),
-        KeyBoardData("C", FunctionColor,  KeyIndex_Clear),
-        KeyBoardData("←", FunctionColor,  KeyIndex_Back),
-    ),
-    listOf(
-        KeyBoardData("B", NumberColor,  KeyIndex_B),
-        KeyBoardData("AND", FunctionColor, KeyIndex_And),
-        KeyBoardData("OR", FunctionColor,  KeyIndex_Or),
-        KeyBoardData("NOT", FunctionColor,  KeyIndex_Not),
-        KeyBoardData(Operator.Divide.showText, FunctionColor,  KeyIndex_Divide),
-    ),
-    listOf(
-        KeyBoardData("C", NumberColor,  KeyIndex_C),
-        KeyBoardData("7", NumberColor, KeyIndex_7),
-        KeyBoardData("8", NumberColor,  KeyIndex_8),
-        KeyBoardData("9", NumberColor,  KeyIndex_9),
-        KeyBoardData(Operator.MULTIPLY.showText, FunctionColor,  KeyIndex_Multiply),
-    ),
+val ProgrammerLeftKeyBoardBtn = listOf(
     listOf(
         KeyBoardData("D", NumberColor,  KeyIndex_D),
-        KeyBoardData("4", NumberColor, KeyIndex_4),
-        KeyBoardData("5", NumberColor,  KeyIndex_5),
-        KeyBoardData("6", NumberColor,  KeyIndex_6),
-        KeyBoardData(Operator.MINUS.showText, FunctionColor,  KeyIndex_Minus),
-        ),
-    listOf(
         KeyBoardData("E", NumberColor,  KeyIndex_E),
-        KeyBoardData("1", NumberColor, KeyIndex_1),
-        KeyBoardData("2", NumberColor,  KeyIndex_2),
-        KeyBoardData("3", NumberColor,  KeyIndex_3),
-        KeyBoardData(Operator.ADD.showText, FunctionColor,  KeyIndex_Add),
+        KeyBoardData("F", NumberColor,  KeyIndex_F)
     ),
     listOf(
-        KeyBoardData("F", NumberColor,  KeyIndex_F),
+        KeyBoardData("A", NumberColor,  KeyIndex_A),
+        KeyBoardData("B", NumberColor,  KeyIndex_B),
+        KeyBoardData("C", NumberColor,  KeyIndex_C)
+        ),
+    listOf(
+        KeyBoardData("7", NumberColor, KeyIndex_7),
+        KeyBoardData("8", NumberColor,  KeyIndex_8),
+        KeyBoardData("9", NumberColor,  KeyIndex_9)
+    ),
+    listOf(
+        KeyBoardData("4", NumberColor, KeyIndex_4),
+        KeyBoardData("5", NumberColor,  KeyIndex_5),
+        KeyBoardData("6", NumberColor,  KeyIndex_6)
+    ),
+    listOf(
+        KeyBoardData("1", NumberColor, KeyIndex_1),
+        KeyBoardData("2", NumberColor,  KeyIndex_2),
+        KeyBoardData("3", NumberColor,  KeyIndex_3)
+    ),
+    listOf(
         KeyBoardData("<<", FunctionColor, KeyIndex_Lsh),
         KeyBoardData("0", NumberColor,  KeyIndex_0),
-        KeyBoardData(">>", FunctionColor,  KeyIndex_Rsh),
-        KeyBoardData("=", FunctionColor,  KeyIndex_Equal),
+        KeyBoardData(">>", FunctionColor,  KeyIndex_Rsh)
+    )
+)
+
+val ProgrammerRightKeyBoardBtn = listOf(
+    listOf(
+        KeyBoardData("C", FunctionColor,  KeyIndex_Clear),
+        KeyBoardData("←", FunctionColor,  KeyIndex_Back)
+    ),
+    listOf(
+        KeyBoardData("CE", FunctionColor,  KeyIndex_CE),
+        KeyBoardData(Operator.Divide.showText, FunctionColor,  KeyIndex_Divide)
+    ),
+    listOf(
+        KeyBoardData("NOT", FunctionColor,  KeyIndex_Not),
+        KeyBoardData(Operator.MULTIPLY.showText, FunctionColor,  KeyIndex_Multiply)
+    ),
+    listOf(
+        KeyBoardData("XOR", FunctionColor,  KeyIndex_XOr),
+        KeyBoardData(Operator.MINUS.showText, FunctionColor,  KeyIndex_Minus)
+    ),
+    listOf(
+        KeyBoardData("AND", FunctionColor, KeyIndex_And),
+        KeyBoardData(Operator.ADD.showText, FunctionColor,  KeyIndex_Add)
+    ),
+    listOf(
+        KeyBoardData("OR", FunctionColor,  KeyIndex_Or),
+        KeyBoardData("=", FunctionColor,  KeyIndex_Equal)
     )
 )
 
