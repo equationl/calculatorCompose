@@ -34,7 +34,7 @@ fun HistoryWidget(
     onDelete: (item: HistoryData?) -> Unit
 ) {
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colors.primaryVariant)) {
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
         LazyColumn(modifier = Modifier.weight(9f)) {
             items(
                 items = historyList,

@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
  * Description: Vibrator帮助类，用于解决旧版本兼容问题
  */
 class VibratorHelper {
-    private lateinit var vibrator: Vibrator
+    private var vibrator: Vibrator? = null
 
     companion object {
         val instance by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -39,24 +39,24 @@ class VibratorHelper {
     }
 
     fun cancel() {
-        vibrator.cancel()
+        vibrator?.cancel()
     }
 
     fun hasVibrator(): Boolean {
-        return vibrator.hasVibrator()
+        return vibrator?.hasVibrator() == true
     }
 
     fun hasAmplitudeControl(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return false
         }
-        return vibrator.hasAmplitudeControl()
+        return vibrator?.hasAmplitudeControl() == true
     }
 
     fun vibrate(timings: LongArray, amplitudes: IntArray, repeat: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val vibrationEffect = VibrationEffect.createWaveform(timings, amplitudes, repeat)
-            vibrator.vibrate(vibrationEffect)
+            vibrator?.vibrate(vibrationEffect)
         }
         else {
             val pattern = mutableListOf<Long>()
@@ -76,25 +76,25 @@ class VibratorHelper {
 
             val patternA = pattern.toLongArray()
             @Suppress("DEPRECATION")
-            vibrator.vibrate(patternA, repeat)
+            vibrator?.vibrate(patternA, repeat)
         }
     }
 
     fun vibrateOneShot(milliseconds: Long, amplitude: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val vibrationEffect = VibrationEffect.createOneShot(milliseconds, amplitude)
-            vibrator.vibrate(vibrationEffect)
+            vibrator?.vibrate(vibrationEffect)
         }
         else {
             @Suppress("DEPRECATION")
-            vibrator.vibrate(milliseconds)
+            vibrator?.vibrate(milliseconds)
         }
     }
 
     fun vibratePredefined(predefined: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val vibrationEffect = VibrationEffect.createPredefined(predefined)
-            vibrator.vibrate(vibrationEffect)
+            vibrator?.vibrate(vibrationEffect)
         }
         else {
             // 系统预设效果就暂时不适配了

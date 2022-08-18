@@ -1,12 +1,10 @@
 package com.equationl.calculator_compose.view
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +26,41 @@ import com.equationl.calculator_compose.view.widgets.AutoSizeText
 import com.equationl.calculator_compose.viewModel.StandardAction
 import com.equationl.calculator_compose.viewModel.StandardViewModel
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun StandardScreen(
     viewModel: StandardViewModel = hiltViewModel()
 ) {
+    val viewState = viewModel.viewStates
+
+    // 显示数据
+    ShowScreen(viewModel)
+
+    Divider(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 0.dp))
+
+    // 键盘与历史记录
+    Box(Modifier.fillMaxSize()) {
+        val isShowKeyBoard = viewState.historyList.isEmpty()
+
+        StandardKeyBoard(viewModel)
+
+        AnimatedVisibility(
+            visible = !isShowKeyBoard,
+            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+        ) {
+            HistoryWidget(
+                historyList = viewState.historyList,
+                onClick = { viewModel.dispatch(StandardAction.ReadFromHistory(it)) },
+                onDelete = { viewModel.dispatch(StandardAction.DeleteHistory(it)) })
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun ShowScreen(viewModel: StandardViewModel) {
     val viewState = viewModel.viewStates
 
     Column(
@@ -49,7 +77,9 @@ fun StandardScreen(
                 AutoSizeText(
                     text = targetState,
                     fontSize = ShowNormalFontSize,
-                    fontWeight = FontWeight.Light)
+                    fontWeight = FontWeight.Light,
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                )
             }
         }
         AnimatedContent(
@@ -72,33 +102,15 @@ fun StandardScreen(
                     text = targetState.formatNumber(formatDecimal = viewState.isFinalResult),
                     fontSize = InputLargeFontSize,
                     fontWeight = FontWeight.Bold,
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
             }
         }
     }
-
-    Box(Modifier.fillMaxSize()) {
-        val isShowKeyBoard = viewState.historyList.isEmpty()
-
-        StandardKeyBoard(viewModel)
-
-        AnimatedVisibility(
-            visible = !isShowKeyBoard,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
-        ) {
-            HistoryWidget(
-                historyList = viewState.historyList,
-                onClick = { viewModel.dispatch(StandardAction.ReadFromHistory(it)) },
-                onDelete = { viewModel.dispatch(StandardAction.DeleteHistory(it)) })
-        }
-
-    }
-
 }
 
 @Composable
-fun StandardKeyBoard(viewModel: StandardViewModel) {
+private fun StandardKeyBoard(viewModel: StandardViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
         for (btnRow in standardKeyBoardBtn()) {
             Row(modifier = Modifier
@@ -110,7 +122,8 @@ fun StandardKeyBoard(viewModel: StandardViewModel) {
                             text = btn.text,
                             onClick = { viewModel.dispatch(StandardAction.ClickBtn(btn.index)) },
                             backGround = btn.background,
-                            paddingValues = PaddingValues(0.5.dp)
+                            paddingValues = PaddingValues(0.5.dp),
+                            isFilled = btn.isFilled
                         )
                     }
                 }
@@ -125,6 +138,7 @@ private fun KeyBoardButton(
     text: String,
     onClick: () -> Unit,
     backGround: Color = Color.White,
+    isFilled: Boolean = false,
     paddingValues: PaddingValues = PaddingValues(0.dp)
 ) {
     Card(
@@ -132,11 +146,13 @@ private fun KeyBoardButton(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
-        backgroundColor = backGround,
-        shape = MaterialTheme.shapes.large
+        backgroundColor = if (isFilled) backGround else MaterialTheme.colors.surface,
+        shape = MaterialTheme.shapes.large,
+        elevation = 0.dp,
+        border = BorderStroke(0.dp, Color.Transparent)
     ) {
         Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-            Text(text, fontSize = 24.sp)
+            Text(text, fontSize = 32.sp, color = if (isFilled) Color.Unspecified else backGround)
         }
     }
 }

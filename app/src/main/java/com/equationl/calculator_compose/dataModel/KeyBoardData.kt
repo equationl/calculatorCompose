@@ -48,7 +48,7 @@ const val KeyIndex_Back = 1003
 
 
 @Composable
-fun numberColor(): Color = MaterialTheme.colors.secondary
+fun numberColor(): Color = Color.Unspecified // MaterialTheme.colors.secondary
 
 @Composable
 fun functionColor(): Color = MaterialTheme.colors.primary
@@ -89,15 +89,15 @@ fun standardKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
             KeyBoardData(Operator.ADD.showText, functionColor(), KeyIndex_Add),
         ),
         listOf(
-            KeyBoardData("+/-", functionColor(), KeyIndex_NegativeNumber),
+            KeyBoardData("+/-", numberColor(), KeyIndex_NegativeNumber),
             KeyBoardData("0", numberColor(), KeyIndex_0),
-            KeyBoardData(".", functionColor(), KeyIndex_Point),
-            KeyBoardData("=", equalColor(), KeyIndex_Equal),
+            KeyBoardData(".", numberColor(), KeyIndex_Point),
+            KeyBoardData("=", equalColor(), KeyIndex_Equal, isFilled = true),
         )
     )
 
 @Composable
-fun programmerLeftKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
+fun programmerNumberKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
     listOf(
         KeyBoardData("D", numberColor(),  KeyIndex_D),
         KeyBoardData("E", numberColor(),  KeyIndex_E),
@@ -131,7 +131,7 @@ fun programmerLeftKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
 )
 
 @Composable
-fun programmerRightKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
+fun programmerFunctionKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
     listOf(
         KeyBoardData("C", functionColor(),  KeyIndex_Clear),
         KeyBoardData("←", functionColor(),  KeyIndex_Back)
@@ -154,7 +154,7 @@ fun programmerRightKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
     ),
     listOf(
         KeyBoardData("OR", functionColor(),  KeyIndex_Or),
-        KeyBoardData("=", equalColor(),  KeyIndex_Equal)
+        KeyBoardData("=", equalColor(),  KeyIndex_Equal, isFilled = true)
     )
 )
 
@@ -169,8 +169,15 @@ val BitOperationList = listOf(
 
 data class KeyBoardData(
     val text: String,
+    /**
+     * 设置按钮颜色，设置范围取决于 [isFilled]
+     * */
     val background: Color,
     val index: Int,
+    /**
+     * 是否填充该按钮，如果为 true 则 [background] 用于填充该按钮背景；否则，[background] 用于设置该按钮字体颜色
+     * */
+    val isFilled: Boolean = false,
     val isAvailable: Boolean = true
 )
 

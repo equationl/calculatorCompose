@@ -1,13 +1,11 @@
 package com.equationl.calculator_compose.view
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.equationl.calculator_compose.dataModel.InputBase
-import com.equationl.calculator_compose.dataModel.programmerLeftKeyBoardBtn
-import com.equationl.calculator_compose.dataModel.programmerRightKeyBoardBtn
+import com.equationl.calculator_compose.dataModel.programmerFunctionKeyBoardBtn
+import com.equationl.calculator_compose.dataModel.programmerNumberKeyBoardBtn
 import com.equationl.calculator_compose.ui.theme.*
 import com.equationl.calculator_compose.utils.formatNumber
 import com.equationl.calculator_compose.view.widgets.AutoSizeText
@@ -34,18 +32,22 @@ fun ProgrammerScreen(
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween) {
         // 左侧键盘
-        Row(modifier = Modifier.weight(1.5f)) {
-            LeftKeyBoard(viewModel = viewModel)
+        Row(modifier = Modifier.weight(1.3f)) {
+            FunctionKeyBoard(viewModel = viewModel)
         }
+
+        Divider(modifier = Modifier.fillMaxHeight().width(1.dp). padding(vertical = 16.dp, horizontal = 0.dp))
 
         // 显示数据
         Row(modifier = Modifier.weight(2f)) {
             CenterScreen(viewModel = viewModel)
         }
 
+        Divider(modifier = Modifier.fillMaxHeight().width(1.dp). padding(vertical = 16.dp, horizontal = 0.dp))
+
         // 右侧键盘
-        Row(modifier = Modifier.weight(1.3f)) {
-            RightKeyBoard(viewModel = viewModel)
+        Row(modifier = Modifier.weight(1.5f)) {
+            NumberBoard(viewModel = viewModel)
         }
     }
 }
@@ -64,7 +66,13 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
             horizontalAlignment = Alignment.End
         ) {
             AnimatedContent(targetState = viewState.showText) { targetState: String ->
-                Text(text = targetState, modifier = Modifier.padding(8.dp), fontSize = ShowNormalFontSize, fontWeight = FontWeight.Light)
+                Text(
+                    text = targetState,
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = ShowNormalFontSize,
+                    fontWeight = FontWeight.Light,
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                )
             }
             AnimatedContent(
                 targetState = viewState.inputValue,
@@ -91,7 +99,8 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                         )
                         ,
                         fontSize = InputLargeFontSize,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                     )
                 }
             }
@@ -112,13 +121,15 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     fontSize =
                     if (viewState.inputBase == InputBase.HEX) InputTitleContentSize
                     else InputNormalFontSize,
-                    fontWeight = if (viewState.inputBase == InputBase.HEX) FontWeight.Bold else null
+                    fontWeight = if (viewState.inputBase == InputBase.HEX) FontWeight.Bold else null,
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
 
                 Text(
                     text = viewState.inputHexText.formatNumber(addSplitChar = " ", splitLength = 4),
                     fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically,
@@ -131,13 +142,15 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     fontSize =
                     if (viewState.inputBase == InputBase.DEC) InputTitleContentSize
                     else InputNormalFontSize,
-                    fontWeight = if (viewState.inputBase == InputBase.DEC) FontWeight.Bold else null
+                    fontWeight = if (viewState.inputBase == InputBase.DEC) FontWeight.Bold else null,
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
 
                 Text(
                     text = viewState.inputDecText.formatNumber(),
                     fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically,
@@ -150,13 +163,15 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     fontSize =
                     if (viewState.inputBase == InputBase.OCT) InputTitleContentSize
                     else InputNormalFontSize,
-                    fontWeight = if (viewState.inputBase == InputBase.OCT) FontWeight.Bold else null
+                    fontWeight = if (viewState.inputBase == InputBase.OCT) FontWeight.Bold else null,
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
 
                 Text(
                     text = viewState.inputOctText.formatNumber(addSplitChar = " "),
                     fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically,
@@ -169,7 +184,8 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     fontSize =
                     if (viewState.inputBase == InputBase.BIN) InputTitleContentSize
                     else InputNormalFontSize,
-                    fontWeight = if (viewState.inputBase == InputBase.BIN) FontWeight.Bold else null
+                    fontWeight = if (viewState.inputBase == InputBase.BIN) FontWeight.Bold else null,
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
 
                 Text(
@@ -177,6 +193,7 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     fontSize = InputNormalFontSize,
                     modifier = Modifier
                         .padding(start = 8.dp),
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
             }
         }
@@ -184,11 +201,11 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
 }
 
 @Composable
-private fun LeftKeyBoard(viewModel: ProgrammerViewModel) {
+private fun NumberBoard(viewModel: ProgrammerViewModel) {
     val viewState = viewModel.viewStates
 
     Column(modifier = Modifier.fillMaxSize()) {
-        for (btnRow in programmerLeftKeyBoardBtn()) {
+        for (btnRow in programmerNumberKeyBoardBtn()) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)) {
@@ -206,6 +223,7 @@ private fun LeftKeyBoard(viewModel: ProgrammerViewModel) {
                             onClick = { viewModel.dispatch(ProgrammerAction.ClickBtn(btn.index)) },
                             isAvailable = isAvailable,
                             backGround = btn.background,
+                            isFilled = btn.isFilled,
                             paddingValues = PaddingValues(0.5.dp)
                         )
                     }
@@ -216,11 +234,11 @@ private fun LeftKeyBoard(viewModel: ProgrammerViewModel) {
 }
 
 @Composable
-private fun RightKeyBoard(viewModel: ProgrammerViewModel) {
+private fun FunctionKeyBoard(viewModel: ProgrammerViewModel) {
     val viewState = viewModel.viewStates
 
     Column(modifier = Modifier.fillMaxSize()) {
-        for (btnRow in programmerRightKeyBoardBtn()) {
+        for (btnRow in programmerFunctionKeyBoardBtn()) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)) {
@@ -238,6 +256,7 @@ private fun RightKeyBoard(viewModel: ProgrammerViewModel) {
                             onClick = { viewModel.dispatch(ProgrammerAction.ClickBtn(btn.index)) },
                             isAvailable = isAvailable,
                             backGround = btn.background,
+                            isFilled = btn.isFilled,
                             paddingValues = PaddingValues(0.5.dp)
                         )
                     }
@@ -254,6 +273,7 @@ private fun KeyBoardButton(
     onClick: () -> Unit,
     isAvailable: Boolean = true,
     backGround: Color = Color.White,
+    isFilled: Boolean = false,
     paddingValues: PaddingValues = PaddingValues(0.dp)
 ) {
     Card(
@@ -261,12 +281,20 @@ private fun KeyBoardButton(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
-        backgroundColor = backGround,
+        backgroundColor = if (isFilled) backGround else MaterialTheme.colors.surface,
         shape = MaterialTheme.shapes.large,
+        elevation = 0.dp,
+        border = BorderStroke(0.dp, Color.Transparent),
         enabled = isAvailable
     ) {
         Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-            Text(text, fontSize = 24.sp, color = if (isAvailable) Color.Unspecified else Color.LightGray)
+            Text(
+                text,
+                fontSize = 24.sp,
+                color = if (isAvailable) {
+                    if (isFilled) Color.Unspecified else backGround
+                } else Color.DarkGray
+            )
         }
     }
 }
