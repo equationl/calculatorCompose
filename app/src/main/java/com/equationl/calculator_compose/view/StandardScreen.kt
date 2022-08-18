@@ -3,9 +3,14 @@ package com.equationl.calculator_compose.view
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowLeft
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +27,7 @@ import com.equationl.calculator_compose.ui.theme.InputLargeFontSize
 import com.equationl.calculator_compose.ui.theme.ShowNormalFontSize
 import com.equationl.calculator_compose.utils.formatNumber
 import com.equationl.calculator_compose.utils.noRippleClickable
-import com.equationl.calculator_compose.view.widgets.AutoSizeText
+import com.equationl.calculator_compose.view.widgets.scrollToLeftAnimation
 import com.equationl.calculator_compose.viewModel.StandardAction
 import com.equationl.calculator_compose.viewModel.StandardViewModel
 
@@ -62,6 +67,8 @@ fun StandardScreen(
 @Composable
 private fun ShowScreen(viewModel: StandardViewModel) {
     val viewState = viewModel.viewStates
+    val inputScrollerState = rememberScrollState()
+    val showTextScrollerState = rememberScrollState()
 
     Column(
         Modifier
@@ -73,13 +80,27 @@ private fun ShowScreen(viewModel: StandardViewModel) {
         verticalArrangement = Arrangement.Center
     ) {
         AnimatedContent(targetState = viewState.showText) { targetState: String ->
-            Row(modifier = Modifier.padding(8.dp)) {
-                AutoSizeText(
-                    text = targetState,
-                    fontSize = ShowNormalFontSize,
-                    fontWeight = FontWeight.Light,
-                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                )
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                if (showTextScrollerState.value != showTextScrollerState.maxValue) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowLeft,
+                        contentDescription = "scroll left",
+                        modifier = Modifier.absoluteOffset(x = scrollToLeftAnimation(-10f).dp)
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .padding(end = 8.dp)
+                        .horizontalScroll(showTextScrollerState, reverseScrolling = true)
+                ) {
+                    Text(
+                        text = targetState,
+                        fontSize = ShowNormalFontSize,
+                        fontWeight = FontWeight.Light,
+                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                    )
+                }
             }
         }
         AnimatedContent(
@@ -96,14 +117,30 @@ private fun ShowScreen(viewModel: StandardViewModel) {
                 )
             }
         ) { targetState: String ->
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                if (inputScrollerState.value != inputScrollerState.maxValue) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowLeft,
+                        contentDescription = "scroll left",
+                        modifier = Modifier.absoluteOffset(x = scrollToLeftAnimation(-10f).dp)
+                    )
+                }
 
-            Row(modifier = Modifier.padding(8.dp)) {
-                AutoSizeText(
-                    text = targetState.formatNumber(formatDecimal = viewState.isFinalResult),
-                    fontSize = InputLargeFontSize,
-                    fontWeight = FontWeight.Bold,
-                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                )
+                Row(modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .padding(end = 8.dp)
+                    .horizontalScroll(inputScrollerState, reverseScrolling = true)
+                ) {
+                    Text(
+                        text = targetState.formatNumber(formatDecimal = viewState.isFinalResult),
+                        fontSize = InputLargeFontSize,
+                        fontWeight = FontWeight.Bold,
+                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                    )
+                    LaunchedEffect(Unit) {
+                        inputScrollerState.scrollTo(0)
+                    }
+                }
             }
         }
     }

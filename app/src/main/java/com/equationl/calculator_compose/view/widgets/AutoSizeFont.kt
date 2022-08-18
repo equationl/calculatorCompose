@@ -17,11 +17,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
 /**
  * @author Róbert Nagy
  *
  * @link https://stackoverflow.com/a/69735469
+ *
+ *  Edit by equationl (http://likehide.com)
  *
  * */
 @Composable
@@ -38,33 +41,41 @@ fun AutoSizeText(
     textAlign: TextAlign? = null,
     lineHeight: TextUnit = TextUnit.Unspecified,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = LocalTextStyle.current
+    style: TextStyle = LocalTextStyle.current,
+    minSize: TextUnit = 12.sp
 ) {
     BoxWithConstraints {
         var shrunkFontSize = fontSize
-        val calculateIntrinsics = @Composable {
-            ParagraphIntrinsics(
-                text, TextStyle(
-                    color = color,
-                    fontSize = shrunkFontSize,
-                    fontWeight = fontWeight,
-                    textAlign = textAlign,
-                    lineHeight = lineHeight,
-                    fontFamily = fontFamily,
-                    textDecoration = textDecoration,
-                    fontStyle = fontStyle,
-                    letterSpacing = letterSpacing
-                ),
-                listOf(), listOf(), LocalDensity.current,
-                LocalFontFamilyResolver.current
-            )
-        }
 
-        var intrinsics = calculateIntrinsics()
-        with(LocalDensity.current) {
-            while (intrinsics.maxIntrinsicWidth > maxWidth.toPx()) {
-                shrunkFontSize *= 0.9
-                intrinsics = calculateIntrinsics()
+        if (shrunkFontSize >= minSize) {
+            val calculateIntrinsics = @Composable {
+                ParagraphIntrinsics(
+                    text, TextStyle(
+                        color = color,
+                        fontSize = shrunkFontSize,
+                        fontWeight = fontWeight,
+                        textAlign = textAlign,
+                        lineHeight = lineHeight,
+                        fontFamily = fontFamily,
+                        textDecoration = textDecoration,
+                        fontStyle = fontStyle,
+                        letterSpacing = letterSpacing
+                    ),
+                    listOf(), listOf(), LocalDensity.current,
+                    LocalFontFamilyResolver.current
+                )
+            }
+
+            var intrinsics = calculateIntrinsics()
+            with(LocalDensity.current) {
+                while (intrinsics.maxIntrinsicWidth > maxWidth.toPx()) {
+                    shrunkFontSize *= 0.9
+                    if (shrunkFontSize < minSize) {
+                        shrunkFontSize = minSize
+                        break
+                    }
+                    intrinsics = calculateIntrinsics()
+                }
             }
         }
         Text(
