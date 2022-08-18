@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.equationl.calculator_compose.dataModel.*
+import com.equationl.calculator_compose.utils.VibratorHelper
 import com.equationl.calculator_compose.utils.calculate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.math.BigInteger
@@ -33,6 +34,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
     private var isErr: Boolean = false
 
     private fun changeInputBase(inputBase: InputBase) {
+        VibratorHelper.instance.vibrateOnClick()
         viewStates = when (inputBase) {
             InputBase.HEX -> {
                 if (viewStates.lastInputValue.isNotEmpty()) {
@@ -94,6 +96,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
 
         // 48 == '0'.code
         if (no in KeyIndex_0..KeyIndex_F) {
+            VibratorHelper.instance.vibrateOnClick()
             val newValue: String =
                 if (viewStates.inputValue == "0") {
                     if (viewStates.inputOperator != Operator.NUll) isInputSecondValue = true
@@ -171,9 +174,11 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                 clickArithmetic(Operator.RSH)
             }
             KeyIndex_Not -> {
+                VibratorHelper.instance.vibrateOnClick()
                 clickNot()
             }
             KeyIndex_CE -> { // "CE"
+                VibratorHelper.instance.vibrateOnClear()
                 if (isCalculated) {
                     clickClear()
                 }
@@ -182,9 +187,11 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                 }
             }
             KeyIndex_Clear -> {  // "C"
+                VibratorHelper.instance.vibrateOnClear()
                 clickClear()
             }
             KeyIndex_Back -> { // "←"
+                VibratorHelper.instance.vibrateOnClick()
                 if (viewStates.inputValue != "0") {
                     var newValue = viewStates.inputValue.substring(0, viewStates.inputValue.length - 1)
                     if (newValue.isEmpty()) newValue = "0"
@@ -281,6 +288,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
     }
 
     private fun clickArithmetic(operator: Operator) {
+        VibratorHelper.instance.vibrateOnClick()
         var newState = viewStates.copy(
             inputOperator = operator,
             lastInputValue = viewStates.inputValue,
@@ -338,6 +346,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
 
     private fun clickEqual() {
         if (viewStates.inputOperator == Operator.NUll) {
+            VibratorHelper.instance.vibrateOnEqual()
             viewStates = if (isAdvancedCalculated) {
                 viewStates.copy(
                     lastInputValue = viewStates.inputValue,
@@ -358,6 +367,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
             val result = programmerCalculate()
 
             if (result.isSuccess) {
+                VibratorHelper.instance.vibrateOnEqual()
                 val resultText : String = try {
                    result.getOrNull().toString().baseConversion(viewStates.inputBase, InputBase.DEC)
                 } catch (e: NumberFormatException) {
@@ -413,6 +423,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                 isCalculated = true
             }
             else {
+                VibratorHelper.instance.vibrateOnError()
                 viewStates = viewStates.copy(
                     inputValue = result.exceptionOrNull()?.message ?: "Err",
                     inputHexText = "Err",

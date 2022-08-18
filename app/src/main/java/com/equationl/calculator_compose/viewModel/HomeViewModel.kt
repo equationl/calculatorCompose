@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.equationl.calculator_compose.utils.VibratorHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -26,6 +27,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun changeScreenOrientation(orientation: Int, context: Context) {
+        VibratorHelper.instance.vibrateOnClick()
         val activity = context.findActivity() ?: return
         activity.requestedOrientation = orientation
     }

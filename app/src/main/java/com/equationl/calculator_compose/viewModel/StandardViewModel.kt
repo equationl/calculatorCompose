@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.equationl.calculator_compose.dataModel.*
 import com.equationl.calculator_compose.database.HistoryDb
+import com.equationl.calculator_compose.utils.VibratorHelper
 import com.equationl.calculator_compose.utils.calculate
 import com.equationl.calculator_compose.utils.formatNumber
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +43,7 @@ class StandardViewModel @Inject constructor(
     private var isErr: Boolean = false
 
     private fun toggleHistory(forceClose: Boolean) {
+        VibratorHelper.instance.vibrateOnClick()
         if (viewStates.historyList.isNotEmpty() || forceClose) {
             viewStates = viewStates.copy(historyList = listOf())
         }
@@ -66,6 +68,7 @@ class StandardViewModel @Inject constructor(
 
     private fun readFromHistory(item: HistoryData) {
         if (item.id != -1) {
+            VibratorHelper.instance.vibrateOnEqual()
             viewStates = StandardState(
                 inputValue = item.result,
                 lastInputValue = item.lastInputText,
@@ -79,10 +82,12 @@ class StandardViewModel @Inject constructor(
     private fun deleteHistory(item: HistoryData?) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                VibratorHelper.instance.vibrateOnError()
                 viewStates = if (item == null) {
                     dataBase.history().deleteAll()
                     viewStates.copy(historyList = listOf())
                 } else {
+                    VibratorHelper.instance.vibrateOnClick()
                     dataBase.history().delete(item)
                     val newList = mutableListOf<HistoryData>()
                     newList.addAll(viewStates.historyList)
@@ -105,6 +110,7 @@ class StandardViewModel @Inject constructor(
         }
 
         if (no in KeyIndex_0..KeyIndex_9) {
+            VibratorHelper.instance.vibrateOnClick()
             val newValue =
                 if (viewStates.inputValue == "0") {
                     if (viewStates.inputOperator != Operator.NUll) isInputSecondValue = true
@@ -153,6 +159,7 @@ class StandardViewModel @Inject constructor(
                 clickArithmetic(Operator.Divide)
             }
             KeyIndex_NegativeNumber -> { // "+/-"
+                VibratorHelper.instance.vibrateOnClick()
                 if (viewStates.inputValue != "0") {
                     val newValue: String =
                         if (viewStates.inputValue.substring(0, 1) == "-") viewStates.inputValue.substring(1, viewStates.inputValue.length)
@@ -161,21 +168,26 @@ class StandardViewModel @Inject constructor(
                 }
             }
             KeyIndex_Point -> { // "."
+                VibratorHelper.instance.vibrateOnClick()
                 if (viewStates.inputValue.indexOf('.') == -1) {
                     viewStates = viewStates.copy(inputValue = viewStates.inputValue + ".")
                 }
             }
             KeyIndex_Reciprocal -> { // "1/x"
+                VibratorHelper.instance.vibrateOnClick()
                 clickReciprocal()
             }
             KeyIndex_Pow2 -> { // "x²"
+                VibratorHelper.instance.vibrateOnClick()
                 clickPow2()
             }
             KeyIndex_Sqrt -> { // "√x"
+                VibratorHelper.instance.vibrateOnClick()
                 clickSqrt()
             }
             KeyIndex_Percentage -> { // "%"
                 if (isInputSecondValue && viewStates.lastInputValue != "" && viewStates.inputOperator != Operator.NUll) {
+                    VibratorHelper.instance.vibrateOnClick()
                     var result: String = calculate(viewStates.inputValue, "100", Operator.Divide).getOrNull().toString()
                     result = calculate(viewStates.lastInputValue, result, Operator.MULTIPLY).getOrNull().toString()
 
@@ -187,6 +199,7 @@ class StandardViewModel @Inject constructor(
                     )
                 }
                 else {
+                    VibratorHelper.instance.vibrateOnClear()
                     viewStates = viewStates.copy(
                         inputValue = "0",
                         showText = "0",
@@ -199,6 +212,7 @@ class StandardViewModel @Inject constructor(
                 clickEqual()
             }
             KeyIndex_CE -> { // "CE"
+                VibratorHelper.instance.vibrateOnClear()
                 if (isCalculated) {
                     clickClear()
                 }
@@ -207,9 +221,11 @@ class StandardViewModel @Inject constructor(
                 }
             }
             KeyIndex_Clear -> {  // "C"
+                VibratorHelper.instance.vibrateOnClear()
                 clickClear()
             }
             KeyIndex_Back -> { // "←"
+                VibratorHelper.instance.vibrateOnClick()
                 if (viewStates.inputValue != "0") {
                     var newValue = viewStates.inputValue.substring(0, viewStates.inputValue.length - 1)
                     if (newValue.isEmpty()) newValue = "0"
@@ -232,6 +248,7 @@ class StandardViewModel @Inject constructor(
         val resultText = if (result.isSuccess) {
             result.getOrNull().toString()
         } else {
+            VibratorHelper.instance.vibrateOnError()
             isErr = true
             result.exceptionOrNull()?.message ?: "Err"
         }
@@ -265,6 +282,7 @@ class StandardViewModel @Inject constructor(
         val resultText = if (result.isSuccess) {
             result.getOrNull().toString()
         } else {
+            VibratorHelper.instance.vibrateOnError()
             isErr = true
             result.exceptionOrNull()?.message ?: "Err"
         }
@@ -322,6 +340,7 @@ class StandardViewModel @Inject constructor(
         val inputValueCache = viewStates.inputValue
 
         if (viewStates.inputOperator == Operator.NUll) {
+            VibratorHelper.instance.vibrateOnEqual()
             viewStates = if (isAdvancedCalculated) {
                 viewStates.copy(
                     lastInputValue = viewStates.inputValue,
@@ -341,6 +360,7 @@ class StandardViewModel @Inject constructor(
         else {
             val result = calculate(viewStates.lastInputValue, viewStates.inputValue, viewStates.inputOperator)
             if (result.isSuccess) {
+                VibratorHelper.instance.vibrateOnEqual()
                 val inputValue = if (viewStates.inputValue.substring(0, 1) == "-") "(${viewStates.inputValue})" else viewStates.inputValue
                 if (isAdvancedCalculated) {
                     val index = viewStates.showText.indexOf(viewStates.inputOperator.showText)
@@ -368,6 +388,7 @@ class StandardViewModel @Inject constructor(
                 isCalculated = true
             }
             else {
+                VibratorHelper.instance.vibrateOnError()
                 viewStates = viewStates.copy(
                     inputValue = result.exceptionOrNull()?.message ?: "Err",
                     showText = "",
@@ -399,6 +420,7 @@ class StandardViewModel @Inject constructor(
     }
 
     private fun clickArithmetic(operator: Operator) {
+        VibratorHelper.instance.vibrateOnClick()
         var newState = viewStates.copy(
             inputOperator = operator,
             lastInputValue = viewStates.inputValue,
