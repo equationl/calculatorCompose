@@ -293,7 +293,9 @@ private fun KeyBoardButton(
                 fontSize = 24.sp,
                 color = if (isAvailable) {
                     if (isFilled) Color.Unspecified else backGround
-                } else Color.DarkGray
+                } else {
+                    if (MaterialTheme.colors.isLight) Color.LightGray else Color.DarkGray
+                }
             )
         }
     }
