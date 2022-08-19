@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowLeft
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.FormatSize
+import androidx.compose.material.icons.outlined.InvertColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -56,13 +57,24 @@ private fun TopMenu(viewModel: OverLayViewModel) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(
-            imageVector = Icons.Outlined.FormatSize,
-            contentDescription = "adjust size",
-            Modifier.clickable {
-                viewModel.dispatch(OverlayAction.ClickAdjustSize)
-            }
-        )
+        Row {
+            Icon(
+                imageVector = Icons.Outlined.FormatSize,
+                contentDescription = "adjust size",
+                Modifier.clickable {
+                    viewModel.dispatch(OverlayAction.ClickAdjustSize)
+                }
+            )
+
+            Icon(
+                imageVector = Icons.Outlined.InvertColors,
+                contentDescription = "adjust transparent",
+                Modifier.clickable {
+                    viewModel.dispatch(OverlayAction.ClickAdjustAlpha)
+                }
+            )
+        }
+
 
         Icon(
             imageVector = Icons.Outlined.Close,
