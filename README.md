@@ -14,6 +14,7 @@
 | ✔ | 位运算：左移、右移（程序员） |
 | ✔ | 逻辑运算：AND、OR、NOT、XOR（程序员） |
 | ✔ | 无限连续计算（标准、程序员） |
+| ✔ | 支持悬浮窗计算器，可调整位置、大小、透明度（标准） |
 | ✔ | 符合人体握持习惯的横屏键盘 |
 | ✔ | 旋转手机自动切换标准和程序员键盘 |
 | ✔ | 深色模式 |
@@ -31,6 +32,7 @@
 | ![1](./docs/img/screenshot1.jpg) <br /> 标准模式 | ![2](./docs/img/screenshot2.jpg) <br /> 标准模式 |
 | ![3](./docs/img/screenshot3.jpg) <br /> 历史记录 | ![4](./docs/img/screenshot4.jpg) <br /> 历史记录 |
 | ![5](./docs/img/screenshot5.jpg) <br /> 程序员模式 | ![6](./docs/img/screenshot6.jpg) <br /> 程序员模式 |
+| ![5](./docs/img/screenshot7.jpg) <br /> 悬浮窗 | ![6](./docs/img/screenshot8.jpg) <br /> 悬浮窗 |
 
 ## 其他
 处理逻辑参考了 *微软计算器*
