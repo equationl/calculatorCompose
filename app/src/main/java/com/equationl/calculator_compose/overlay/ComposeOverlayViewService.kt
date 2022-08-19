@@ -1,8 +1,10 @@
 package com.equationl.calculator_compose.overlay
 
 import android.graphics.PixelFormat
+import android.os.Build
 import android.view.Gravity
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -17,27 +19,36 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import com.equationl.calculator_compose.utils.getScreenSize
 import kotlin.math.roundToInt
 
 /**
  * Service that is ready to display compose overlay view
  * @author Quentin Nivelais
  * @link https://gist.github.com/KONFeature/2f84436e1c0a1926505cac934d470f90
+ *
+ *  Edit by equationl (likehide.com)
  */
+@RequiresApi(Build.VERSION_CODES.R)
 abstract class ComposeOverlayViewService : ViewReadyService() {
 
     // Build the layout param for our popup
     private val layoutParams by lazy {
-        WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        ).apply {
+        WindowManager.LayoutParams().apply {
+            format = PixelFormat.TRANSLUCENT
+            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
             gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-            width = 200
-            height = 500
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                @Suppress("DEPRECATION")
+                type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+            } else {
+                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            }
+
+            val screenSize = getScreenSize(this@ComposeOverlayViewService)
+
+            width = screenSize.x / 3
+            height = screenSize.y / 3
         }
     }
 
@@ -102,4 +113,13 @@ abstract class ComposeOverlayViewService : ViewReadyService() {
             },
             content = content
         )
+
+    internal fun updateSize(scale: Float) {
+        val screenSize = getScreenSize(this@ComposeOverlayViewService)
+        layoutParams.apply {
+            width = (screenSize.x / scale).roundToInt()
+            height = (screenSize.y / scale).roundToInt()
+        }
+        windowManager.updateViewLayout(composeView, layoutParams)
+    }
 }

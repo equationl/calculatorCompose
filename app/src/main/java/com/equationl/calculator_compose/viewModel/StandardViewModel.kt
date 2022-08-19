@@ -17,19 +17,20 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class StandardViewModel @Inject constructor(
+open class StandardViewModel @Inject constructor(
     private val dataBase: HistoryDb
 ): ViewModel() {
 
     var viewStates by mutableStateOf(StandardState())
         private set
 
-    fun dispatch(action: StandardAction) {
+    open fun dispatch(action: StandardAction) {
         when (action) {
             is StandardAction.ClickBtn -> clickBtn(action.no)
             is StandardAction.ToggleHistory -> toggleHistory(action.forceClose)
             is StandardAction.ReadFromHistory -> readFromHistory(action.item)
             is StandardAction.DeleteHistory -> deleteHistory(action.item)
+            else -> {  }
         }
     }
 

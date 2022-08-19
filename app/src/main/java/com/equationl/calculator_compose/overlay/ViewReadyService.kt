@@ -2,8 +2,10 @@ package com.equationl.calculator_compose.overlay
 
 import android.content.Context
 import android.hardware.display.DisplayManager
+import android.os.Build
 import android.view.Display
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
@@ -16,6 +18,7 @@ import androidx.savedstate.SavedStateRegistryOwner
  * @author Quentin Nivelais
  * @link https://gist.github.com/KONFeature/2f84436e1c0a1926505cac934d470f90
  */
+@RequiresApi(Build.VERSION_CODES.R)
 abstract class ViewReadyService : LifecycleService(), SavedStateRegistryOwner, ViewModelStoreOwner {
 
     /**

@@ -158,6 +158,40 @@ fun programmerFunctionKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
     )
 )
 
+@Composable
+fun overlayKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
+    listOf(
+        KeyBoardData("CE", functionColor(), KeyIndex_CE),
+        KeyBoardData("C", functionColor(),  KeyIndex_Clear),
+        KeyBoardData("←", functionColor(),  KeyIndex_Back),
+        KeyBoardData(Operator.Divide.showText, functionColor(), KeyIndex_Divide)
+        ),
+    listOf(
+        KeyBoardData("7", numberColor(), KeyIndex_7),
+        KeyBoardData("8", numberColor(), KeyIndex_8),
+        KeyBoardData("9", numberColor(), KeyIndex_9),
+        KeyBoardData(Operator.MULTIPLY.showText, functionColor(), KeyIndex_Multiply),
+    ),
+    listOf(
+        KeyBoardData("4", numberColor(), KeyIndex_4),
+        KeyBoardData("5", numberColor(), KeyIndex_5),
+        KeyBoardData("6", numberColor(), KeyIndex_6),
+        KeyBoardData(Operator.MINUS.showText, functionColor(), KeyIndex_Minus),
+    ),
+    listOf(
+        KeyBoardData("1", numberColor(), KeyIndex_1),
+        KeyBoardData("2", numberColor(), KeyIndex_2),
+        KeyBoardData("3", numberColor(), KeyIndex_3),
+        KeyBoardData(Operator.ADD.showText, functionColor(), KeyIndex_Add),
+    ),
+    listOf(
+        KeyBoardData("±", numberColor(), KeyIndex_NegativeNumber),
+        KeyBoardData("0", numberColor(), KeyIndex_0),
+        KeyBoardData(".", numberColor(), KeyIndex_Point),
+        KeyBoardData("=", equalColor(), KeyIndex_Equal, isFilled = true),
+    )
+)
+
 val BitOperationList = listOf(
     Operator.NOT,
     Operator.AND,

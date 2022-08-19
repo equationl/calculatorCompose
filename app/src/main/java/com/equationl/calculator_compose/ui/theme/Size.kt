@@ -7,3 +7,6 @@ val InputNormalFontSize = 20.sp
 
 val InputLargeFontSize = 32.sp
 val ShowNormalFontSize = 22.sp
+
+val OverlayNormalTextSize = 20.sp
+val OverlayLargeTextSize = 24.sp
