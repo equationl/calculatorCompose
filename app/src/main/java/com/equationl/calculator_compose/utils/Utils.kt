@@ -126,16 +126,21 @@ fun calculate(leftValue: String, rightValue: String, operator: Operator, scale: 
             if (right.signum() == 0) {
                 return Result.failure(ArithmeticException("Err: 除数不能为零"))
             }
-            return  Result.success(left.divide(right, scale, RoundingMode.HALF_UP))
+            return  Result.success(left.divide(right, scale, RoundingMode.HALF_UP).stripTrailingZeros())
         }
         Operator.SQRT -> {
             if (left.signum() == -1) {
                 return Result.failure(ArithmeticException("Err: 无效输入"))
             }
-            return Result.success(left.sqrt(16))
+            return Result.success(left.sqrt(scale).stripTrailingZeros())
         }
         Operator.POW2 -> {
-            return Result.success(left.pow(2))
+            val result = left.pow(2)
+            if (result.toString().length > 5000) {
+                return Result.failure(NumberFormatException("Err: 数字过大，无法显示"))
+            }
+
+            return Result.success(result)
         }
         Operator.NUll -> {
             return  Result.success(left)

@@ -247,7 +247,7 @@ open class StandardViewModel @Inject constructor(
     private fun clickReciprocal() {
         val result = calculate("1", viewStates.inputValue, Operator.Divide)
         val resultText = if (result.isSuccess) {
-            result.getOrNull().toString()
+            result.getOrNull()?.toPlainString() ?: "Null"
         } else {
             VibratorHelper.instance.vibrateOnError()
             isErr = true
@@ -271,7 +271,7 @@ open class StandardViewModel @Inject constructor(
                 showText = "1/(${viewStates.inputValue})",
                 isFinalResult = false
             )
-            isInputSecondValue = true
+           // isInputSecondValue = true
         }
 
         isAdvancedCalculated = true
@@ -281,7 +281,7 @@ open class StandardViewModel @Inject constructor(
         val result = calculate(viewStates.inputValue, "0", Operator.SQRT)
 
         val resultText = if (result.isSuccess) {
-            result.getOrNull().toString()
+            result.getOrNull()?.toPlainString() ?: "Null"
         } else {
             VibratorHelper.instance.vibrateOnError()
             isErr = true
@@ -305,7 +305,7 @@ open class StandardViewModel @Inject constructor(
                 showText = "${Operator.SQRT.showText}(${viewStates.inputValue})",
                 isFinalResult = false
             )
-            isInputSecondValue = true
+            //isInputSecondValue = true
         }
 
         isAdvancedCalculated = true
@@ -314,8 +314,16 @@ open class StandardViewModel @Inject constructor(
     private fun clickPow2() {
         val result = calculate(viewStates.inputValue, "0", Operator.POW2)
 
+        val resultText = if (result.isSuccess) {
+            result.getOrNull().toString()
+        } else {
+            VibratorHelper.instance.vibrateOnError()
+            isErr = true
+            result.exceptionOrNull()?.message ?: "Err"
+        }
+
         val newState = viewStates.copy(
-            inputValue = result.getOrNull().toString()
+            inputValue = resultText
         )
 
         if (isInputSecondValue) {
@@ -331,7 +339,7 @@ open class StandardViewModel @Inject constructor(
                 showText = "(${viewStates.inputValue})${Operator.POW2.showText}",
                 isFinalResult = false
             )
-            isInputSecondValue = true
+            //isInputSecondValue = true
         }
 
         isAdvancedCalculated = true
@@ -362,18 +370,19 @@ open class StandardViewModel @Inject constructor(
             val result = calculate(viewStates.lastInputValue, viewStates.inputValue, viewStates.inputOperator)
             if (result.isSuccess) {
                 VibratorHelper.instance.vibrateOnEqual()
+                val resultText = result.getOrNull()?.toPlainString() ?: "Null"
                 val inputValue = if (viewStates.inputValue.substring(0, 1) == "-") "(${viewStates.inputValue})" else viewStates.inputValue
                 if (isAdvancedCalculated) {
                     val index = viewStates.showText.indexOf(viewStates.inputOperator.showText)
                     viewStates = if (index != -1 && index == viewStates.showText.lastIndex) {
                         viewStates.copy(
-                            inputValue = result.getOrNull().toString(),
+                            inputValue = resultText,
                             showText = "${viewStates.showText}$inputValue=",
                             isFinalResult = true
                         )
                     } else {
                         viewStates.copy(
-                            inputValue = result.getOrNull().toString(),
+                            inputValue = resultText,
                             showText = "${viewStates.showText}=",
                             isFinalResult = true
                         )
@@ -381,7 +390,7 @@ open class StandardViewModel @Inject constructor(
                 }
                 else {
                     viewStates = viewStates.copy(
-                        inputValue = result.getOrNull().toString(),
+                        inputValue = resultText,
                         showText = "${viewStates.lastInputValue}${viewStates.inputOperator.showText}$inputValue=",
                         isFinalResult = true
                     )

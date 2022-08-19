@@ -95,7 +95,7 @@ private fun ShowScreen(viewModel: StandardViewModel) {
                         .horizontalScroll(showTextScrollerState, reverseScrolling = true)
                 ) {
                     Text(
-                        text = targetState,
+                        text = if (targetState.length > 5000) "数字过长" else targetState,
                         fontSize = ShowNormalFontSize,
                         fontWeight = FontWeight.Light,
                         color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary

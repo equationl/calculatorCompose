@@ -62,7 +62,7 @@ fun standardKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
             KeyBoardData("%", functionColor(),  KeyIndex_Percentage),
             KeyBoardData("CE", functionColor(), KeyIndex_CE),
             KeyBoardData("C", functionColor(),  KeyIndex_Clear),
-            KeyBoardData("←", functionColor(),  KeyIndex_Back),
+            KeyBoardData("⇦", functionColor(),  KeyIndex_Back),
         ),
         listOf(
             KeyBoardData("1/x", functionColor(), KeyIndex_Reciprocal),
@@ -134,7 +134,7 @@ fun programmerNumberKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
 fun programmerFunctionKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
     listOf(
         KeyBoardData("C", functionColor(),  KeyIndex_Clear),
-        KeyBoardData("←", functionColor(),  KeyIndex_Back)
+        KeyBoardData("⇦", functionColor(),  KeyIndex_Back)
     ),
     listOf(
         KeyBoardData("CE", functionColor(),  KeyIndex_CE),
@@ -163,7 +163,7 @@ fun overlayKeyBoardBtn(): List<List<KeyBoardData>> = listOf(
     listOf(
         KeyBoardData("CE", functionColor(), KeyIndex_CE),
         KeyBoardData("C", functionColor(),  KeyIndex_Clear),
-        KeyBoardData("←", functionColor(),  KeyIndex_Back),
+        KeyBoardData("⇦", functionColor(),  KeyIndex_Back),
         KeyBoardData(Operator.Divide.showText, functionColor(), KeyIndex_Divide)
         ),
     listOf(

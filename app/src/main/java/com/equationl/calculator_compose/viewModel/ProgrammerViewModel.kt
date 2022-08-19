@@ -497,11 +497,12 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                 scale = 0
             ).fold({
                 try {
-                    it.toString().toLong()
+                    it.toPlainString().toLong()
                 } catch (e: NumberFormatException) {
+                    e.printStackTrace()
                     return Result.failure(NumberFormatException("Err: 结果溢出"))
                 }
-                return Result.success(it.toString())
+                return Result.success(it.toPlainString())
             }, {
                 return Result.failure(it)
             })
