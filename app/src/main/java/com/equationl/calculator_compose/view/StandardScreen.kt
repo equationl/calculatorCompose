@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowLeft
@@ -84,17 +85,19 @@ private fun ShowScreen(viewModel: StandardViewModel) {
     ) {
         // 上一个计算结果
         AnimatedContent(targetState = viewState.lastShowText) { targetState: String ->
-            AutoSizeText(
-                text = targetState,
-                fontSize = ShowSmallFontSize,
-                fontWeight = FontWeight.Light,
-                color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(bottom = 16.dp)
-                    .alpha(0.5f),
-                minSize = 10.sp
-            )
+            SelectionContainer {
+                AutoSizeText(
+                    text = targetState,
+                    fontSize = ShowSmallFontSize,
+                    fontWeight = FontWeight.Light,
+                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(bottom = 16.dp)
+                        .alpha(0.5f),
+                    minSize = 10.sp
+                )
+            }
         }
 
         Column(horizontalAlignment = Alignment.End) {
@@ -114,12 +117,14 @@ private fun ShowScreen(viewModel: StandardViewModel) {
                             .padding(end = 8.dp)
                             .horizontalScroll(showTextScrollerState, reverseScrolling = true)
                     ) {
-                        Text(
-                            text = if (targetState.length > 5000) "数字过长" else targetState,
-                            fontSize = ShowNormalFontSize,
-                            fontWeight = FontWeight.Light,
-                            color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                        )
+                        SelectionContainer {
+                            Text(
+                                text = if (targetState.length > 5000) "数字过长" else targetState,
+                                fontSize = ShowNormalFontSize,
+                                fontWeight = FontWeight.Light,
+                                color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                            )
+                        }
                     }
                 }
             }
@@ -153,12 +158,14 @@ private fun ShowScreen(viewModel: StandardViewModel) {
                         .padding(end = 8.dp)
                         .horizontalScroll(inputScrollerState, reverseScrolling = true)
                     ) {
-                        Text(
-                            text = targetState.formatNumber(formatDecimal = viewState.isFinalResult),
-                            fontSize = InputLargeFontSize,
-                            fontWeight = FontWeight.Bold,
-                            color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                        )
+                        SelectionContainer {
+                            Text(
+                                text = targetState.formatNumber(formatDecimal = viewState.isFinalResult),
+                                fontSize = InputLargeFontSize,
+                                fontWeight = FontWeight.Bold,
+                                color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                            )
+                        }
                         LaunchedEffect(Unit) {
                             inputScrollerState.scrollTo(0)
                         }

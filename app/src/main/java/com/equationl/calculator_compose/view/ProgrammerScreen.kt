@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,14 +37,20 @@ fun ProgrammerScreen(
             FunctionKeyBoard(viewModel = viewModel)
         }
 
-        Divider(modifier = Modifier.fillMaxHeight().width(1.dp). padding(vertical = 16.dp, horizontal = 0.dp))
+        Divider(modifier = Modifier
+            .fillMaxHeight()
+            .width(1.dp)
+            .padding(vertical = 16.dp, horizontal = 0.dp))
 
         // 显示数据
         Row(modifier = Modifier.weight(2f)) {
             CenterScreen(viewModel = viewModel)
         }
 
-        Divider(modifier = Modifier.fillMaxHeight().width(1.dp). padding(vertical = 16.dp, horizontal = 0.dp))
+        Divider(modifier = Modifier
+            .fillMaxHeight()
+            .width(1.dp)
+            .padding(vertical = 16.dp, horizontal = 0.dp))
 
         // 右侧键盘
         Row(modifier = Modifier.weight(1.5f)) {
@@ -65,15 +72,19 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.End
         ) {
+            // 计算公式
             AnimatedContent(targetState = viewState.showText) { targetState: String ->
-                Text(
-                    text = targetState,
-                    modifier = Modifier.padding(8.dp),
-                    fontSize = ShowNormalFontSize,
-                    fontWeight = FontWeight.Light,
-                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                )
+                SelectionContainer {
+                    Text(
+                        text = targetState,
+                        modifier = Modifier.padding(8.dp),
+                        fontSize = ShowNormalFontSize,
+                        fontWeight = FontWeight.Light,
+                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                    )
+                }
             }
+            // 输入值或计算结果
             AnimatedContent(
                 targetState = viewState.inputValue,
                 transitionSpec = {
@@ -89,19 +100,21 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                 }
             ) { targetState: String ->
                 Row(modifier = Modifier.padding(8.dp)) {
-                    AutoSizeText(
-                        text = targetState.formatNumber(
-                            formatDecimal = false, // 程序员计算没有小数
-                            addSplitChar = if (viewState.inputBase == InputBase.DEC) "," else " ",
-                            splitLength = if (viewState.inputBase == InputBase.HEX || viewState.inputBase == InputBase.BIN) 4 else 3,
-                            isAddLeadingZero = false, // 即使是二进制，在输入时也不应该有前导0
-                            formatInteger = true
+                    SelectionContainer {
+                        AutoSizeText(
+                            text = targetState.formatNumber(
+                                formatDecimal = false, // 程序员计算没有小数
+                                addSplitChar = if (viewState.inputBase == InputBase.DEC) "," else " ",
+                                splitLength = if (viewState.inputBase == InputBase.HEX || viewState.inputBase == InputBase.BIN) 4 else 3,
+                                isAddLeadingZero = false, // 即使是二进制，在输入时也不应该有前导0
+                                formatInteger = true
+                            )
+                            ,
+                            fontSize = InputLargeFontSize,
+                            fontWeight = FontWeight.Bold,
+                            color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                         )
-                        ,
-                        fontSize = InputLargeFontSize,
-                        fontWeight = FontWeight.Bold,
-                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                    )
+                    }
                 }
             }
         }
@@ -125,12 +138,14 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
 
-                Text(
-                    text = viewState.inputHexText.formatNumber(addSplitChar = " ", splitLength = 4),
-                    fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp),
-                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                )
+                SelectionContainer {
+                    Text(
+                        text = viewState.inputHexText.formatNumber(addSplitChar = " ", splitLength = 4),
+                        fontSize = InputNormalFontSize,
+                        modifier = Modifier.padding(start = 8.dp),
+                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                    )
+                }
             }
             Row(verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -146,12 +161,15 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
 
-                Text(
-                    text = viewState.inputDecText.formatNumber(),
-                    fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp),
-                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                )
+                SelectionContainer {
+                    Text(
+                        text = viewState.inputDecText.formatNumber(),
+                        fontSize = InputNormalFontSize,
+                        modifier = Modifier.padding(start = 8.dp),
+                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                    )
+                }
+
             }
             Row(verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -167,12 +185,15 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
 
-                Text(
-                    text = viewState.inputOctText.formatNumber(addSplitChar = " "),
-                    fontSize = InputNormalFontSize,
-                    modifier = Modifier.padding(start = 8.dp),
-                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                )
+                SelectionContainer {
+                    Text(
+                        text = viewState.inputOctText.formatNumber(addSplitChar = " "),
+                        fontSize = InputNormalFontSize,
+                        modifier = Modifier.padding(start = 8.dp),
+                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                    )
+                }
+
             }
             Row(verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -188,13 +209,15 @@ private fun CenterScreen(viewModel: ProgrammerViewModel) {
                     color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
                 )
 
-                Text(
-                    text = viewState.inputBinText.formatNumber(addSplitChar = " ", splitLength = 4, isAddLeadingZero = viewState.inputBinText != "0"),
-                    fontSize = InputNormalFontSize,
-                    modifier = Modifier
-                        .padding(start = 8.dp),
-                    color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
-                )
+                SelectionContainer {
+                    Text(
+                        text = viewState.inputBinText.formatNumber(addSplitChar = " ", splitLength = 4, isAddLeadingZero = viewState.inputBinText != "0"),
+                        fontSize = InputNormalFontSize,
+                        modifier = Modifier
+                            .padding(start = 8.dp),
+                        color = if (MaterialTheme.colors.isLight) Color.Unspecified else MaterialTheme.colors.primary
+                    )
+                }
             }
         }
     }
