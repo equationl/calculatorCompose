@@ -4,10 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowLeft
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.FormatSize
-import androidx.compose.material.icons.outlined.InvertColors
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -75,14 +72,23 @@ private fun TopMenu(viewModel: OverLayViewModel) {
             )
         }
 
+        Row {
+            Icon(
+                imageVector = Icons.Outlined.Fullscreen,
+                contentDescription = "Back Full Screen",
+                Modifier.clickable {
+                    viewModel.dispatch(OverlayAction.ClickBackFullScreen(context))
+                }
+            )
 
-        Icon(
-            imageVector = Icons.Outlined.Close,
-            contentDescription = "close",
-            Modifier.clickable {
-                viewModel.dispatch(OverlayAction.ClickClose(context))
-            }
-        )
+            Icon(
+                imageVector = Icons.Outlined.Close,
+                contentDescription = "close",
+                Modifier.clickable {
+                    viewModel.dispatch(OverlayAction.ClickClose(context))
+                }
+            )
+        }
     }
 }
 

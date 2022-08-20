@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import com.equationl.calculator_compose.MainActivity
 import com.equationl.calculator_compose.database.HistoryDb
 import com.equationl.calculator_compose.overlay.OverlayService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,10 +36,19 @@ class OverLayViewModel @Inject constructor(
             is OverlayAction.ClickClose -> clickClose(action.context)
             is OverlayAction.ClickAdjustSize -> clickAdjustSize()
             is OverlayAction.ClickAdjustAlpha -> clickAdjustAlpha()
+            is OverlayAction.ClickBackFullScreen -> clickBackFullScreen(action.context)
             else -> {
 
             }
         }
+    }
+
+    private fun clickBackFullScreen(context: Context) {
+        context.startActivity(
+            Intent(context, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
     }
 
     private fun clickAdjustAlpha() {
@@ -78,6 +88,7 @@ sealed class OverlayAction: StandardAction() {
     object ClickAdjustSize: OverlayAction()
     object ClickAdjustAlpha: OverlayAction()
     data class ClickClose(val context: Context): OverlayAction()
+    data class ClickBackFullScreen(val context: Context): OverlayAction()
 }
 
 sealed class OverlayEvent {

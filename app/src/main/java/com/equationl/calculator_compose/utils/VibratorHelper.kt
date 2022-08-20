@@ -124,7 +124,7 @@ class VibratorHelper {
      * 开始计算时的振动效果
      * */
     fun vibrateOnEqual() {
-        instance.vibrateOneShot(200, 150)
+        instance.vibrateOneShot(50, 150)
     }
 
     /**
