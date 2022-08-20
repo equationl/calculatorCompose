@@ -125,6 +125,7 @@ open class StandardViewModel @Inject constructor(
                     no.toString()
                 }
                 else if (viewStates.inputOperator != Operator.NUll && !isInputSecondValue) {
+                    isCalculated = false
                     isInputSecondValue = true
                     no.toString()
                 }

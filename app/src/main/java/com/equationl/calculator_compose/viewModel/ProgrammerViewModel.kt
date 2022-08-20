@@ -111,6 +111,7 @@ class ProgrammerViewModel @Inject constructor(): ViewModel() {
                     (48 + no).toChar().toString()
                 }
                 else if (viewStates.inputOperator != Operator.NUll && !isInputSecondValue) {
+                    isCalculated = false
                     isInputSecondValue = true
                     (48+no).toChar().toString()
                 }
