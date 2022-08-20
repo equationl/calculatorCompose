@@ -132,10 +132,15 @@ open class StandardViewModel @Inject constructor(
                 else if (isCalculated) {
                     isCalculated = false
                     isInputSecondValue = false
-                    viewStates = StandardState()
+                    viewStates = StandardState(
+                        lastShowText =
+                            if (!isAdvancedCalculated)
+                                viewStates.showText+viewStates.inputValue
+                            else viewStates.lastShowText
+                    )
                     no.toString()
                 }
-                else if (isAdvancedCalculated&& viewStates.inputOperator == Operator.NUll) { // 如果在输入高级运算符后直接输入数字，则重置状态
+                else if (isAdvancedCalculated && viewStates.inputOperator == Operator.NUll) { // 如果在输入高级运算符后直接输入数字，则重置状态
                     isAdvancedCalculated = false
                     isCalculated = false
                     isInputSecondValue = false
@@ -262,7 +267,11 @@ open class StandardViewModel @Inject constructor(
         if (isInputSecondValue) {
             viewStates = newState.copy(
                 showText = "${viewStates.lastInputValue}${viewStates.inputOperator.showText}1/(${viewStates.inputValue})",
-                isFinalResult = false
+                isFinalResult = false,
+                lastShowText =
+                if (viewStates.showText.indexOf("=") != -1)
+                    viewStates.showText+viewStates.inputValue
+                else viewStates.lastShowText
             )
         }
         else {
@@ -296,7 +305,11 @@ open class StandardViewModel @Inject constructor(
         if (isInputSecondValue) {
             viewStates = newState.copy(
                 showText = "${viewStates.lastInputValue}${viewStates.inputOperator.showText}${Operator.SQRT.showText}(${viewStates.inputValue})",
-                isFinalResult = false
+                isFinalResult = false,
+                lastShowText =
+                if (viewStates.showText.indexOf("=") != -1)
+                    viewStates.showText+viewStates.inputValue
+                else viewStates.lastShowText
             )
         }
         else {
@@ -330,7 +343,11 @@ open class StandardViewModel @Inject constructor(
         if (isInputSecondValue) {
             viewStates = newState.copy(
                 showText = "${viewStates.lastInputValue}${viewStates.inputOperator.showText}(${viewStates.inputValue})${Operator.POW2.showText}",
-                isFinalResult = false
+                isFinalResult = false,
+                lastShowText =
+                    if (viewStates.showText.indexOf("=") != -1)
+                        viewStates.showText+viewStates.inputValue
+                    else viewStates.lastShowText
             )
         }
         else {
@@ -440,6 +457,12 @@ open class StandardViewModel @Inject constructor(
         if (isCalculated) {
             isCalculated = false
             isInputSecondValue = false
+            newState = newState.copy(
+                lastShowText =
+                if (!isAdvancedCalculated)
+                    viewStates.showText+viewStates.inputValue
+                else viewStates.lastShowText
+            )
         }
 
         if (isAdvancedCalculated) {
@@ -494,7 +517,8 @@ data class StandardState(
     val lastInputValue: String = "",
     val showText: String = "",
     val isFinalResult: Boolean = false,
-    val historyList: List<HistoryData> = listOf()
+    val historyList: List<HistoryData> = listOf(),
+    val lastShowText: String = ""
 )
 
 sealed class StandardAction {

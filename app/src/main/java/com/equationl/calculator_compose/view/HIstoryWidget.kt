@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.equationl.calculator_compose.dataModel.HistoryData
 import com.equationl.calculator_compose.dataModel.Operator
 import com.equationl.calculator_compose.ui.theme.CalculatorComposeTheme
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * @param onDelete 如果 item 为 null 则表示删除所有历史记录，否则删除指定的 item
@@ -34,7 +36,10 @@ fun HistoryWidget(
     onDelete: (item: HistoryData?) -> Unit
 ) {
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)) {
         LazyColumn(modifier = Modifier.weight(9f)) {
             items(
                 items = historyList,
@@ -50,6 +55,13 @@ fun HistoryWidget(
                             onClick = { onClick(it) },
                             onLongClick = { onDelete(it) }
                         )) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp), horizontalArrangement = Arrangement.Start) {
+                        val simpleDateFormat = SimpleDateFormat("MM-dd HH:mm:ss", Locale.CHINA)
+                        Text(text = simpleDateFormat.format(Date(it.createTime)))
+                    }
                     Text(text = it.showText,fontSize = 22.sp, fontWeight = FontWeight.Light)
                     Text(text = it.result, fontSize = 32.sp, fontWeight = FontWeight.Bold)
                 }
@@ -57,7 +69,10 @@ fun HistoryWidget(
         }
 
         Row(
-            Modifier.fillMaxSize().weight(1f).padding(16.dp),
+            Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .padding(16.dp),
             horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Bottom
         ) {
             Icon(
@@ -66,8 +81,8 @@ fun HistoryWidget(
                 Modifier
                     .fillMaxHeight()
                     .clickable {
-                    onDelete(null)
-                })
+                        onDelete(null)
+                    })
         }
     }
 

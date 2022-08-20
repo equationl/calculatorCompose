@@ -5,7 +5,7 @@ import com.equationl.calculator_compose.dataModel.HistoryData
 
 @Dao
 interface HistoryDao {
-    @Query("select * from history")
+    @Query("select * from history order by id DESC")
     fun getAll(): List<HistoryData>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

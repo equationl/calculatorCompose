@@ -18,4 +18,6 @@ data class HistoryData(
     val operator: Operator,
     @ColumnInfo(name = "result")
     val result: String,
+    @ColumnInfo(name = "create_time")
+    val createTime: Long = System.currentTimeMillis(),
 )

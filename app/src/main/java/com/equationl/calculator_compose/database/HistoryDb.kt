@@ -9,7 +9,7 @@ import com.equationl.calculator_compose.dataModel.HistoryData
 
 @Database(
     entities = [HistoryData::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(HistoryConverters::class)
