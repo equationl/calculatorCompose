@@ -40,4 +40,4 @@
 
 布局参考了 *小米计算器* 与 *微软计算器*
 
-实现细节：*待补充*
+实现细节：[使用 Jetpack Compose 实现一个计算器APP](http://www.likehide.com/blogs/android/using_compose_made_a_calculator_app/)
